@@ -1167,18 +1167,6 @@ a.nav-item:hover,
   background: #fbfcfd;
 }
 
-.risk-score {
-  display: grid;
-  place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: var(--navy);
-  color: #fff;
-  font-size: 19px;
-  font-weight: 600;
-}
-
 .risk-copy {
   display: flex;
   flex-direction: column;

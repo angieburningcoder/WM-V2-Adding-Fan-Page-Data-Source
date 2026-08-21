@@ -103,7 +103,7 @@ const labelMap = {
   risk: { high: 'High', medium: 'Medium', low: 'Low' },
   status: { pending: '待審核', confirmed: '已確認', scheduled: '已排程', ignored: '已忽略' },
   source: { 'fan-page': '粉專搜尋', 'meta-ads': 'Meta Ads' },
-  platform: { facebook: 'Facebook', instagram: 'Instagram', messenger: 'Messenger', threads: 'Threads' }
+  platform: { facebook: 'Facebook', instagram: 'Instagram', messenger: 'Messenger', threads: 'Threads', audience_network: 'Audience Network' }
 };
 
 /* ---------- 小元件 ---------- */
@@ -127,7 +127,8 @@ const platformSvg = {
   facebook: '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#1877F2"/><path fill="#fff" d="M15.6 12.4h-2.1V19h-2.8v-6.6H9.2v-2.3h1.5V8.7c0-1.9 1.1-2.9 2.9-2.9.8 0 1.6.1 1.6.1v1.8h-.9c-.9 0-1.2.5-1.2 1.1v1.3h2.1l-.3 2.3Z"/></svg>',
   instagram: '<svg viewBox="0 0 24 24"><defs><linearGradient id="ig" x1="0" y1="24" x2="24" y2="0"><stop offset="0" stop-color="#FEDA75"/><stop offset=".35" stop-color="#FA7E1E"/><stop offset=".7" stop-color="#D62976"/><stop offset="1" stop-color="#962FBF"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#ig)"/><path fill="none" stroke="#fff" stroke-width="1.6" d="M8.4 5.6h7.2a2.8 2.8 0 0 1 2.8 2.8v7.2a2.8 2.8 0 0 1-2.8 2.8H8.4a2.8 2.8 0 0 1-2.8-2.8V8.4a2.8 2.8 0 0 1 2.8-2.8Z"/><circle cx="12" cy="12" r="3.1" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="16.3" cy="7.7" r="1" fill="#fff"/></svg>',
   messenger: '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="12" fill="#7B4BFF"/><path fill="#fff" d="M12 5.4c-3.8 0-6.7 2.8-6.7 6.5 0 2.1.9 3.9 2.5 5.1v2.5l2.3-1.3c.6.2 1.3.3 1.9.3 3.8 0 6.7-2.8 6.7-6.6S15.8 5.4 12 5.4Zm.7 8.8-1.7-1.8-3.3 1.8 3.6-3.9 1.8 1.8 3.3-1.8-3.7 3.9Z"/></svg>',
-  threads: '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#000"/><path fill="#fff" d="M12.2 18.6c-3.7 0-5.8-2.4-5.8-6.6s2.1-6.6 5.8-6.6c2.4 0 4.1 1 4.9 2.8l-1.5.7c-.6-1.3-1.7-1.9-3.4-1.9-2.6 0-4 1.7-4 5s1.4 5 4 5c1.7 0 2.8-.7 3.1-1.9.2-.9-.3-1.6-1.3-2-.2 1.6-1.2 2.6-2.8 2.6-1.5 0-2.5-.9-2.5-2.2 0-1.5 1.3-2.4 3.3-2.4h.7c0-.9-.4-1.4-1.3-1.4-.6 0-1.1.3-1.3.8l-1.4-.6c.4-1.1 1.4-1.7 2.7-1.7 1.9 0 2.9 1.1 2.9 3.1v.2c1.6.6 2.4 1.9 2.1 3.5-.4 2.1-2.2 3.4-4.9 3.4Zm-.4-5.3c-1 0-1.6.4-1.6 1s.4.9 1.1.9c.9 0 1.4-.6 1.5-1.9h-1Z"/></svg>'
+  threads: '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#000"/><path fill="#fff" d="M12.2 18.6c-3.7 0-5.8-2.4-5.8-6.6s2.1-6.6 5.8-6.6c2.4 0 4.1 1 4.9 2.8l-1.5.7c-.6-1.3-1.7-1.9-3.4-1.9-2.6 0-4 1.7-4 5s1.4 5 4 5c1.7 0 2.8-.7 3.1-1.9.2-.9-.3-1.6-1.3-2-.2 1.6-1.2 2.6-2.8 2.6-1.5 0-2.5-.9-2.5-2.2 0-1.5 1.3-2.4 3.3-2.4h.7c0-.9-.4-1.4-1.3-1.4-.6 0-1.1.3-1.3.8l-1.4-.6c.4-1.1 1.4-1.7 2.7-1.7 1.9 0 2.9 1.1 2.9 3.1v.2c1.6.6 2.4 1.9 2.1 3.5-.4 2.1-2.2 3.4-4.9 3.4Zm-.4-5.3c-1 0-1.6.4-1.6 1s.4.9 1.1.9c.9 0 1.4-.6 1.5-1.9h-1Z"/></svg>',
+  audience_network: '<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#0081FB"/><circle cx="12" cy="7" r="2" fill="#fff"/><circle cx="7" cy="16" r="2" fill="#fff"/><circle cx="17" cy="16" r="2" fill="#fff"/><path stroke="#fff" stroke-width="1.3" d="M12 9v3m0 0-4 3m4-3 4 3"/></svg>'
 };
 
 function platformIcons(platforms) {
@@ -333,7 +334,6 @@ function renderIgnoredTable() {
           <span class="page-id">${item.pageId}</span>
         </button>
       </td>
-      <td>${riskTag(item.risk)}</td>
       <td>${platformIcons(item.platforms)}</td>
       <td class="number-column">${formatNumber(item.followers)}</td>
       <td>${escapeHtml(item.reasons[0])}</td>
@@ -444,10 +444,9 @@ function openDrawer(id) {
     <section class="drawer-section">
       <h3 class="section-title">風險判斷 ${riskTag(item.risk)}</h3>
       <div class="risk-summary">
-        <div class="risk-score">${item.score}</div>
         <div class="risk-copy">
           <strong>${labelMap.risk[item.risk]} Risk</strong>
-          <span>分數為 Prototype 展示值；正式版應由可解釋規則計算。</span>
+          <span>由偵測規則與 LLM 判斷產生，以下為命中的判斷理由。</span>
         </div>
       </div>
       <ul class="reason-list">
@@ -520,7 +519,9 @@ function openDrawer(id) {
   ui.ignoreButton.textContent = item.status === 'ignored' ? '已標記忽略' : '標記忽略';
   ui.drawerBackdrop.hidden = false;
   ui.drawer.setAttribute('aria-hidden', 'false');
-  requestAnimationFrame(() => ui.drawer.classList.add('is-open'));
+  // 強制 reflow，讓 transform 動畫確實從關閉狀態開始（同步，不依賴 rAF）
+  void ui.drawer.offsetWidth;
+  ui.drawer.classList.add('is-open');
   document.body.style.overflow = 'hidden';
 }
 
@@ -607,7 +608,7 @@ function exportCsv() {
   }
 
   const headers = [
-    '粉絲頁名稱', '粉絲頁編號', '粉絲頁追蹤者數', '偽冒風險程度', '風險分數', '風險判斷理由',
+    '粉絲頁名稱', '粉絲頁編號', '粉絲頁追蹤者數', '偽冒風險程度', '風險判斷理由',
     '資料來源', '投放平台', '處理狀態', '首次偵測', '最後偵測', '累積命中次數', '搜尋排名', '粉絲頁連結',
     '廣告編號', '廣告文案', '廣告風險', '廣告偵測日期', '廣告連結'
   ];
@@ -619,7 +620,6 @@ function exportCsv() {
       item.pageId,
       item.followers,
       labelMap.risk[item.risk],
-      item.score,
       item.reasons.join('；'),
       item.sources.map((s) => labelMap.source[s]).join(' + '),
       item.platforms.map((p) => labelMap.platform[p]).join(' / '),
