@@ -1,24 +1,28 @@
+// 案件以「粉絲頁」為主體；每個案件底下掛關聯廣告與原始偵測歷程。
+// 註：偵測用的關鍵字不在前端呈現，避免被反向利用。
 const cases = [
   {
     id: 'WM-202607-001',
     name: 'Tenda24 智慧商城',
     pageId: '102156088437690',
     pageUrl: 'https://facebook.com/tenda24-smart-shop',
+    followers: 5212,
+    platforms: ['facebook', 'instagram'],
     sources: ['fan-page', 'meta-ads'],
-    keyword: 'Tenda 官方',
     ads: 10,
+    adsBreakdown: { high: 8, medium: 2, low: 0 },
     lastDetected: '2026/07/24 09:10',
     firstDetected: '2026/07/04 00:18',
     risk: 'high',
     score: 88,
-    reasons: ['粉專名稱與官方品牌高度相似', '關聯 10 則高風險 Meta Ads', '名稱含「智慧商城」等商業導向詞彙'],
+    reasons: ['粉專名稱與官方品牌高度相似', '關聯 10 則高風險 Meta Ads', '頁面缺乏官方認證標記'],
     status: 'confirmed',
     rank: 3,
     seenCount: 4,
     adsData: [
-      { id: 'AD-134663071068724', title: 'Tenda Wi-Fi 限時優惠', detectedAt: '2026/07/24', risk: 'High' },
-      { id: 'AD-23507155694804', title: '官方客服抽獎活動', detectedAt: '2026/07/23', risk: 'High' },
-      { id: 'AD-92180515908313', title: '限量路由器免費領取', detectedAt: '2026/07/22', risk: 'High' }
+      { id: '134663071068724', title: 'Tenda Wi-Fi 限時優惠', detectedAt: '2026/07/24', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=134663071068724' },
+      { id: '23507155694804', title: '官方客服抽獎活動', detectedAt: '2026/07/23', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=23507155694804' },
+      { id: '92180515908313', title: '限量路由器免費領取', detectedAt: '2026/07/22', risk: 'medium', adUrl: 'https://facebook.com/ads/library/?id=92180515908313' }
     ]
   },
   {
@@ -26,14 +30,16 @@ const cases = [
     name: 'Zmaewe 智慧商城',
     pageId: '1209840905536793',
     pageUrl: 'https://facebook.com/zmaewe-mall',
+    followers: 1276,
+    platforms: ['facebook'],
     sources: ['fan-page'],
-    keyword: '智慧商城',
     ads: 0,
+    adsBreakdown: { high: 0, medium: 0, low: 0 },
     lastDetected: '2026/07/24 09:10',
     firstDetected: '2026/07/17 00:11',
     risk: 'medium',
     score: 56,
-    reasons: ['命中客戶設定的偵測關鍵字', '尚未找到可關聯的 Meta Ads', '需人工確認是否為授權通路'],
+    reasons: ['粉專名稱與官方品牌部分重疊', '尚未找到可關聯的 Meta Ads', '需人工確認是否為授權通路'],
     status: 'pending',
     rank: 7,
     seenCount: 2,
@@ -44,20 +50,22 @@ const cases = [
     name: 'Blupatlgielovo Stewuntmabim',
     pageId: '1221663407692128',
     pageUrl: 'https://facebook.com/blupatlgielovo',
+    followers: 160,
+    platforms: ['facebook', 'instagram', 'messenger'],
     sources: ['meta-ads'],
-    keyword: '投資獲利',
     ads: 4,
+    adsBreakdown: { high: 3, medium: 1, low: 0 },
     lastDetected: '2026/07/23 12:05',
     firstDetected: '2026/07/08 12:02',
     risk: 'high',
     score: 78,
-    reasons: ['關聯 4 則高風險 Meta Ads', '廣告文案命中投資詐騙字詞', '尚未由 Fan Page Search 再次命中'],
+    reasons: ['關聯 4 則高風險 Meta Ads', '廣告文案具投資招攬特徵', '尚未由粉專搜尋再次命中'],
     status: 'scheduled',
     rank: null,
     seenCount: 5,
     adsData: [
-      { id: 'AD-104180604863443', title: '每日穩定獲利群組', detectedAt: '2026/07/23', risk: 'High' },
-      { id: 'AD-136055733265029', title: '老師帶單免費加入', detectedAt: '2026/07/21', risk: 'High' }
+      { id: '104180604863443', title: '每日穩定獲利群組', detectedAt: '2026/07/23', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=104180604863443' },
+      { id: '136055733265029', title: '老師帶單免費加入', detectedAt: '2026/07/21', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=136055733265029' }
     ]
   },
   {
@@ -65,9 +73,11 @@ const cases = [
     name: '台北101體驗店 Fkwhyx2',
     pageId: '1063019866905745',
     pageUrl: 'https://facebook.com/taipei101-fkwhyx2',
+    followers: 521,
+    platforms: ['facebook', 'instagram', 'threads'],
     sources: ['fan-page', 'meta-ads'],
-    keyword: '台北101 官方',
     ads: 3,
+    adsBreakdown: { high: 2, medium: 1, low: 0 },
     lastDetected: '2026/07/22 00:15',
     firstDetected: '2026/07/15 00:15',
     risk: 'high',
@@ -77,8 +87,8 @@ const cases = [
     rank: 2,
     seenCount: 3,
     adsData: [
-      { id: 'AD-1754301552372183', title: '周年慶免費贈品', detectedAt: '2026/07/22', risk: 'High' },
-      { id: 'AD-2130851590831323', title: '填問卷抽萬元禮券', detectedAt: '2026/07/20', risk: 'Medium' }
+      { id: '1754301552372183', title: '周年慶免費贈品', detectedAt: '2026/07/22', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=1754301552372183' },
+      { id: '2130851590831323', title: '填問卷抽萬元禮券', detectedAt: '2026/07/20', risk: 'medium', adUrl: 'https://facebook.com/ads/library/?id=2130851590831323' }
     ]
   },
   {
@@ -86,14 +96,16 @@ const cases = [
     name: 'Fjxov2 萬鑫鉅量',
     pageId: '1111383828733099',
     pageUrl: 'https://facebook.com/fjxov2',
+    followers: 280,
+    platforms: ['facebook'],
     sources: ['fan-page'],
-    keyword: '萬鑫',
     ads: 0,
+    adsBreakdown: { high: 0, medium: 0, low: 0 },
     lastDetected: '2026/07/21 00:08',
     firstDetected: '2026/07/21 00:08',
     risk: 'low',
     score: 24,
-    reasons: ['僅命中部分關鍵字', '無關聯廣告', '目前缺乏其他偽冒證據'],
+    reasons: ['名稱僅部分相似', '無關聯廣告', '目前缺乏其他偽冒證據'],
     status: 'ignored',
     rank: 28,
     seenCount: 1,
@@ -104,20 +116,22 @@ const cases = [
     name: '資訊應用測試 zcat2',
     pageId: '1054521154421977',
     pageUrl: 'https://facebook.com/zcat2-test',
+    followers: 1215,
+    platforms: ['facebook', 'messenger'],
     sources: ['meta-ads'],
-    keyword: '客服中心',
     ads: 2,
+    adsBreakdown: { high: 1, medium: 1, low: 0 },
     lastDetected: '2026/07/20 12:03',
     firstDetected: '2026/07/12 12:04',
     risk: 'medium',
     score: 61,
-    reasons: ['關聯 2 則可疑 Meta Ads', '廣告導向非官方表單', '未命中粉專名稱關鍵字'],
+    reasons: ['關聯 2 則可疑 Meta Ads', '廣告導向非官方表單', '未由粉專搜尋命中'],
     status: 'confirmed',
     rank: null,
     seenCount: 3,
     adsData: [
-      { id: 'AD-1374009451253891', title: '線上客服認證', detectedAt: '2026/07/20', risk: 'Medium' },
-      { id: 'AD-57401559883123', title: '帳號異常驗證', detectedAt: '2026/07/19', risk: 'High' }
+      { id: '1374009451253891', title: '線上客服認證', detectedAt: '2026/07/20', risk: 'medium', adUrl: 'https://facebook.com/ads/library/?id=1374009451253891' },
+      { id: '57401559883123', title: '帳號異常驗證', detectedAt: '2026/07/19', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=57401559883123' }
     ]
   },
   {
@@ -125,9 +139,11 @@ const cases = [
     name: '雲林福利補助專區',
     pageId: '1093810720468330',
     pageUrl: 'https://facebook.com/yunlin-benefit',
+    followers: 12749,
+    platforms: ['facebook', 'instagram', 'messenger', 'threads'],
     sources: ['fan-page', 'meta-ads'],
-    keyword: '雲林縣政府',
     ads: 6,
+    adsBreakdown: { high: 5, medium: 1, low: 0 },
     lastDetected: '2026/07/24 09:10',
     firstDetected: '2026/07/10 00:10',
     risk: 'high',
@@ -137,9 +153,9 @@ const cases = [
     rank: 1,
     seenCount: 5,
     adsData: [
-      { id: 'AD-881330172048233', title: '縣民補助金申請', detectedAt: '2026/07/24', risk: 'High' },
-      { id: 'AD-881330172048234', title: '育兒津貼加碼登記', detectedAt: '2026/07/24', risk: 'High' },
-      { id: 'AD-881330172048235', title: '長者福利領取通知', detectedAt: '2026/07/23', risk: 'High' }
+      { id: '881330172048233', title: '縣民補助金申請', detectedAt: '2026/07/24', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=881330172048233' },
+      { id: '881330172048234', title: '育兒津貼加碼登記', detectedAt: '2026/07/24', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=881330172048234' },
+      { id: '881330172048235', title: '長者福利領取通知', detectedAt: '2026/07/23', risk: 'medium', adUrl: 'https://facebook.com/ads/library/?id=881330172048235' }
     ]
   },
   {
@@ -147,9 +163,11 @@ const cases = [
     name: '雲林生活大小事',
     pageId: '1093810720468477',
     pageUrl: 'https://facebook.com/yunlin-life-news',
+    followers: 3480,
+    platforms: ['facebook'],
     sources: ['fan-page'],
-    keyword: '雲林',
     ads: 0,
+    adsBreakdown: { high: 0, medium: 0, low: 0 },
     lastDetected: '2026/07/19 00:16',
     firstDetected: '2026/07/19 00:16',
     risk: 'low',
@@ -159,5 +177,50 @@ const cases = [
     rank: 44,
     seenCount: 1,
     adsData: []
+  },
+  {
+    id: 'WM-202607-009',
+    name: '雲林縣政府社會處志工隊',
+    pageId: '524478640902725',
+    pageUrl: 'https://facebook.com/yunlin-volunteer',
+    followers: 2749,
+    platforms: ['facebook', 'instagram'],
+    sources: ['fan-page'],
+    ads: 1,
+    adsBreakdown: { high: 0, medium: 0, low: 1 },
+    lastDetected: '2026/07/18 00:22',
+    firstDetected: '2026/07/11 00:22',
+    risk: 'low',
+    score: 12,
+    reasons: ['經人工確認為官方授權單位', '廣告內容為活動宣傳', '已加入白名單候選'],
+    status: 'ignored',
+    rank: 15,
+    seenCount: 2,
+    adsData: [
+      { id: '1083205593207913', title: '志工招募說明會', detectedAt: '2026/07/18', risk: 'low', adUrl: 'https://facebook.com/ads/library/?id=1083205593207913' }
+    ]
+  },
+  {
+    id: 'WM-202607-010',
+    name: '雲林農產直銷站',
+    pageId: '112428841963305',
+    pageUrl: 'https://facebook.com/yunlin-farm-direct',
+    followers: 866,
+    platforms: ['facebook', 'messenger'],
+    sources: ['meta-ads'],
+    ads: 2,
+    adsBreakdown: { high: 0, medium: 0, low: 2 },
+    lastDetected: '2026/07/16 12:40',
+    firstDetected: '2026/07/09 12:40',
+    risk: 'low',
+    score: 20,
+    reasons: ['廣告導向合法電商平台', '名稱未冒用官方識別', '人工確認為一般商家'],
+    status: 'ignored',
+    rank: null,
+    seenCount: 2,
+    adsData: [
+      { id: '1490318431621455', title: '產地直送蔬菜箱', detectedAt: '2026/07/16', risk: 'low', adUrl: 'https://facebook.com/ads/library/?id=1490318431621455' },
+      { id: '499174615989052', title: '夏季水果預購', detectedAt: '2026/07/15', risk: 'low', adUrl: 'https://facebook.com/ads/library/?id=499174615989052' }
+    ]
   }
 ];
