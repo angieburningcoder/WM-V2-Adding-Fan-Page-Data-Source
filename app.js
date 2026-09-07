@@ -31,7 +31,7 @@ function buildDetectionHistory(item) {
       return {
         source: '粉專搜尋',
         detectedAt: formatDetectedDate(new Date(start.getTime() + spanMs * ratio)),
-        detail: item.rank == null ? '搜尋排名不適用' : `搜尋排名 ${item.rank + (hitCount - 1 - index)}`
+        detail: '粉專搜尋命中'
       };
     }).reverse()
     : [];
@@ -52,13 +52,12 @@ const state = {
   status: 'all',
   platform: 'all',
   keyword: '',
-  ignoredKeyword: '',
   currentCaseId: null,
+  pendingStatus: null,
   page: 1,
   pageSize: 10,
   expanded: new Set(),
-  sort: { key: 'risk', dir: 'desc' },
-  ignoredSort: { key: 'lastDetected', dir: 'desc' }
+  sort: { key: 'risk', dir: 'desc' }
 };
 
 const ui = {
@@ -70,10 +69,6 @@ const ui = {
   pageSize: document.querySelector('#pageSize'),
   prevPage: document.querySelector('#prevPage'),
   nextPage: document.querySelector('#nextPage'),
-  ignoredTableBody: document.querySelector('#ignoredTableBody'),
-  ignoredEmptyState: document.querySelector('#ignoredEmptyState'),
-  ignoredResultCount: document.querySelector('#ignoredResultCount'),
-  ignoredSearch: document.querySelector('#ignoredSearch'),
   statTotal: document.querySelector('#statTotal'),
   statBoth: document.querySelector('#statBoth'),
   statHigh: document.querySelector('#statHigh'),
@@ -83,28 +78,53 @@ const ui = {
   statusFilter: document.querySelector('#statusFilter'),
   platformFilter: document.querySelector('#platformFilter'),
   caseTable: document.querySelector('#caseTableBody').closest('table'),
-  ignoredTable: document.querySelector('#ignoredTableBody').closest('table'),
   tableSearch: document.querySelector('#tableSearch'),
   drawer: document.querySelector('#caseDrawer'),
   drawerBackdrop: document.querySelector('#drawerBackdrop'),
   drawerTitle: document.querySelector('#drawerTitle'),
   drawerContent: document.querySelector('#drawerContent'),
-  scheduleButton: document.querySelector('#scheduleButton'),
-  ignoreButton: document.querySelector('#ignoreButton'),
+  statusSelect: document.querySelector('#statusSelect'),
   modalBackdrop: document.querySelector('#modalBackdrop'),
   modalSummary: document.querySelector('#modalSummary'),
+  shotBackdrop: document.querySelector('#shotBackdrop'),
+  shotKind: document.querySelector('#shotKind'),
+  shotTitle: document.querySelector('#shotTitle'),
+  shotMeta: document.querySelector('#shotMeta'),
+  shotFootnote: document.querySelector('#shotFootnote'),
   toast: document.querySelector('#toast'),
   dateFrom: document.querySelector('#dateFrom'),
   dateTo: document.querySelector('#dateTo'),
+  dateToggle: document.querySelector('#dateToggle'),
+  dateLabel: document.querySelector('#dateLabel'),
+  datePanel: document.querySelector('#datePanel'),
+  activeFilters: document.querySelector('#activeFilters'),
   clientName: document.querySelector('#clientName')
+};
+
+// Case Status：tone 決定 badge 配色，order 決定排序先後（依處理流程）
+const STATUS_DEFS = {
+  scheduled: { label: '已排程', tone: 'progress', order: 1, hint: '已建立 case，待內部處理' },
+  submitted: { label: '已送件', tone: 'progress', order: 2, hint: '已人工送出 Meta 檢舉' },
+  accepted: { label: '已受理', tone: 'progress', order: 3, hint: 'Meta 已受理或回覆' },
+  success: { label: '已下架成功', tone: 'success', order: 4, hint: '經送件後成功下架' },
+  takedown_confirmed: { label: '因其他因素被下架', tone: 'success', order: 5, hint: 'target 已消失，但不一定由我們送件造成' },
+  failed: { label: '下架失敗', tone: 'danger', order: 6, hint: 'Meta 拒絕或無法處理' },
+  not_submitted: { label: '不送件', tone: 'neutral', order: 7, hint: '證據不足、資料不足或其他原因' },
+  false_positive: { label: '誤判', tone: 'neutral', order: 8, hint: '判斷非偽冒' }
 };
 
 const labelMap = {
   risk: { high: 'High', medium: 'Medium', low: 'Low' },
-  status: { pending: '待審核', confirmed: '已確認', scheduled: '已排程', ignored: '已忽略' },
+  status: Object.fromEntries(Object.entries(STATUS_DEFS).map(([key, def]) => [key, def.label])),
   source: { 'fan-page': '粉專搜尋', 'meta-ads': 'Meta Ads' },
   platform: { facebook: 'Facebook', instagram: 'Instagram', messenger: 'Messenger', threads: 'Threads', audience_network: 'Audience Network' }
 };
+
+function statusBadge(status) {
+  const def = STATUS_DEFS[status];
+  if (!def) return '';
+  return `<span class="badge badge--${def.tone}" title="${def.hint}">${def.label}</span>`;
+}
 
 /* ---------- 小元件 ---------- */
 function escapeHtml(value) {
@@ -157,9 +177,16 @@ function formatNumber(value) {
   return value.toLocaleString('en-US');
 }
 
+// 廣告不對外開連結，只用眼睛開啟截圖檢視
+function eyeButton(kind, id, label, extraClass = '') {
+  return `<button class="eye-button ${extraClass}" type="button" data-shot="${kind}" data-shot-id="${id}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c-5 0-9.1 4.4-9.9 6.6a1.2 1.2 0 0 0 0 .8C2.9 14.6 7 19 12 19s9.1-4.4 9.9-6.6a1.2 1.2 0 0 0 0-.8C21.1 9.4 17 5 12 5Zm0 12c-3.7 0-7-3.2-7.9-5C5 10.2 8.3 7 12 7s7 3.2 7.9 5c-.9 1.8-4.2 5-7.9 5Zm0-8.3a3.3 3.3 0 1 0 0 6.6 3.3 3.3 0 0 0 0-6.6Z"/></svg>
+  </button>`;
+}
+
 /* ---------- 排序 ---------- */
 const RISK_ORDER = { high: 3, medium: 2, low: 1 };
-const STATUS_ORDER = { pending: 1, confirmed: 2, scheduled: 3, ignored: 4 };
+const STATUS_ORDER = Object.fromEntries(Object.entries(STATUS_DEFS).map(([key, def]) => [key, def.order]));
 
 const sortAccessors = {
   name: (item) => item.name,
@@ -169,8 +196,7 @@ const sortAccessors = {
   followers: (item) => item.followers,
   sources: (item) => item.sources.length,
   status: (item) => STATUS_ORDER[item.status],
-  lastDetected: (item) => parseDetectedDate(item.lastDetected).getTime(),
-  reason: (item) => item.reasons[0]
+  lastDetected: (item) => parseDetectedDate(item.lastDetected).getTime()
 };
 
 function sortRows(rows, sort) {
@@ -218,31 +244,39 @@ function bindSortHandlers(table, sortKey, onChange) {
 }
 
 /* ---------- 篩選 ---------- */
-function matchKeyword(item, keyword) {
-  if (!keyword) return true;
-  const haystack = [item.name, item.pageId, item.id, ...item.adsData.map((ad) => ad.id), ...item.adsData.map((ad) => ad.title)];
-  return haystack.some((value) => String(value).toLowerCase().includes(keyword));
+// 多關鍵字：以空白／逗號／頓號分隔，任一關鍵字命中任一欄位即算符合（OR）
+function splitKeywords(input) {
+  return String(input)
+    .split(/[\s,、，]+/)
+    .map((word) => word.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+// 只比對「識別性」欄位；來源／風險／狀態／平台等維度交給上方下拉，避免兩個入口做同一件事
+function matchKeyword(item, keywords) {
+  if (!keywords.length) return true;
+  const haystack = [
+    item.name,
+    item.pageId,
+    item.id,
+    ...item.adsData.map((ad) => ad.id),
+    ...item.adsData.map((ad) => ad.title)
+  ].filter(Boolean).map((value) => String(value).toLowerCase());
+  return keywords.some((word) => haystack.some((value) => value.includes(word)));
 }
 
 function getActiveCases() {
-  const keyword = state.keyword.trim().toLowerCase();
+  const keywords = splitKeywords(state.keyword);
   const rows = cases.filter((item) => {
-    if (item.status === 'ignored') return false;
     const sourceMatch = state.source === 'all'
       || (state.source === 'both' && item.sources.length === 2)
       || (state.source !== 'both' && item.sources.includes(state.source));
     const riskMatch = state.risk === 'all' || item.risk === state.risk;
     const statusMatch = state.status === 'all' || item.status === state.status;
     const platformMatch = state.platform === 'all' || item.platforms.includes(state.platform);
-    return sourceMatch && riskMatch && statusMatch && platformMatch && matchKeyword(item, keyword);
+    return sourceMatch && riskMatch && statusMatch && platformMatch && matchKeyword(item, keywords);
   });
   return sortRows(rows, state.sort);
-}
-
-function getIgnoredCases() {
-  const keyword = state.ignoredKeyword.trim().toLowerCase();
-  const rows = cases.filter((item) => item.status === 'ignored' && matchKeyword(item, keyword));
-  return sortRows(rows, state.ignoredSort);
 }
 
 /* ---------- 主表 ---------- */
@@ -275,7 +309,7 @@ function renderTable() {
         <td>${platformIcons(item.platforms)}</td>
         <td class="number-column">${formatNumber(item.followers)}</td>
         <td>${sourceBadges(item)}</td>
-        <td><span class="badge badge--${item.status}">${labelMap.status[item.status]}</span></td>
+        <td>${statusBadge(item.status)}</td>
         <td>${item.lastDetected}</td>
         <td class="action-column">
           <button class="row-action" type="button" data-open-case="${item.id}" aria-label="查看 ${escapeHtml(item.name)} 詳情">
@@ -299,7 +333,7 @@ function renderTable() {
                 </span>
                 ${riskTag(ad.risk)}
                 <span class="ad-subitem-date">${ad.detectedAt}</span>
-                <a href="${ad.adUrl}" target="_blank" rel="noreferrer">查看廣告</a>
+                ${eyeButton('ad', ad.id, `查看「${ad.title}」的廣告截圖`)}
               </div>
             `).join('')}
             ${remaining > 0 ? `<div class="ad-sublist-more">另有 ${remaining} 則廣告未於 Prototype 展開</div>` : ''}
@@ -323,57 +357,82 @@ function renderTable() {
   ui.statAds.textContent = rows.reduce((total, item) => total + item.ads, 0);
 }
 
-/* ---------- 忽略清單 ---------- */
-function renderIgnoredTable() {
-  const rows = getIgnoredCases();
-  ui.ignoredTableBody.innerHTML = rows.map((item) => `
-    <tr>
-      <td>
-        <button class="page-name" type="button" data-open-case="${item.id}">
-          ${escapeHtml(item.name)}
-          <span class="page-id">${item.pageId}</span>
-        </button>
-      </td>
-      <td>${platformIcons(item.platforms)}</td>
-      <td class="number-column">${formatNumber(item.followers)}</td>
-      <td>${escapeHtml(item.reasons[0])}</td>
-      <td>${item.lastDetected}</td>
-      <td class="action-column">
-        <button class="row-action" type="button" data-open-case="${item.id}" aria-label="查看 ${escapeHtml(item.name)} 詳情">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v2h6.6L5 17.6 6.4 19 17 8.4V15h2V5H9Z"/></svg>
-        </button>
-      </td>
-    </tr>
-  `).join('');
+/* ---------- 已套用條件 chips ---------- */
+// 日期不列入 chips：它永遠有值，由日期下拉本身顯示範圍即可
+function getActiveFilterChips() {
+  const chips = [];
+  if (state.keyword.trim()) {
+    chips.push({ key: 'keyword', label: '搜尋', value: state.keyword.trim() });
+  }
+  if (state.source !== 'all') {
+    const label = state.source === 'both' ? '雙來源命中' : labelMap.source[state.source];
+    chips.push({ key: 'source', label: '資料來源', value: label });
+  }
+  if (state.risk !== 'all') {
+    chips.push({ key: 'risk', label: '偽冒風險', value: labelMap.risk[state.risk] });
+  }
+  if (state.status !== 'all') {
+    chips.push({ key: 'status', label: '處理狀態', value: STATUS_DEFS[state.status].label });
+  }
+  if (state.platform !== 'all') {
+    chips.push({ key: 'platform', label: '投放平台', value: labelMap.platform[state.platform] });
+  }
+  return chips;
+}
 
-  applySortIcons(ui.ignoredTable, state.ignoredSort);
-  ui.ignoredEmptyState.hidden = rows.length !== 0;
-  ui.ignoredTableBody.closest('.table-scroll').hidden = rows.length === 0;
-  ui.ignoredResultCount.textContent = `共 ${rows.length} 筆`;
+function renderActiveFilters() {
+  // 下拉本身也標示「有沒有在篩」，不用一直回頭看 chips
+  [['sourceFilter', 'source'], ['riskFilter', 'risk'], ['statusFilter', 'status'], ['platformFilter', 'platform']]
+    .forEach(([el, key]) => ui[el].classList.toggle('is-active', state[key] !== 'all'));
+
+  const chips = getActiveFilterChips();
+  ui.activeFilters.hidden = chips.length === 0;
+  if (!chips.length) {
+    ui.activeFilters.innerHTML = '';
+    return;
+  }
+  ui.activeFilters.innerHTML = `
+    <span class="active-filters-label">已套用：</span>
+    ${chips.map((chip) => `
+      <button class="filter-chip" type="button" data-clear-filter="${chip.key}"
+        aria-label="移除條件 ${escapeHtml(chip.label)}：${escapeHtml(chip.value)}">
+        <span>${escapeHtml(chip.label)}：${escapeHtml(chip.value)}</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6.4 5 5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5Z"/></svg>
+      </button>
+    `).join('')}
+    <button class="link-button" type="button" data-clear-filter="all">清除全部</button>
+  `;
+}
+
+function clearFilter(key) {
+  if (key === 'all') {
+    state.keyword = '';
+    state.source = 'all';
+    state.risk = 'all';
+    state.status = 'all';
+    state.platform = 'all';
+  } else if (key === 'keyword') {
+    state.keyword = '';
+  } else {
+    state[key] = 'all';
+  }
+  ui.tableSearch.value = state.keyword;
+  ui.sourceFilter.value = state.source;
+  ui.riskFilter.value = state.risk;
+  ui.statusFilter.value = state.status;
+  ui.platformFilter.value = state.platform;
+  state.page = 1;
+  render();
 }
 
 function render() {
   renderTable();
-  renderIgnoredTable();
+  renderActiveFilters();
 }
 
 /* ---------- 案件詳情 ---------- */
 function getCurrentCase() {
   return cases.find((item) => item.id === state.currentCaseId);
-}
-
-function evidencePlaceholder(caption, link, linkLabel) {
-  return `
-    <div class="evidence-item">
-      <div class="evidence-caption">
-        <span>${caption}</span>
-      </div>
-      <div class="evidence-placeholder">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 5H3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1Zm-1 12H4V7h16v10ZM8.5 10.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM6 15.5l3.2-3.2 2.1 2.1 3.4-3.4L18 14.4v1.1H6v-.5Z"/></svg>
-        <span>此欄位將顯示截圖</span>
-      </div>
-      <a class="evidence-link" href="${link}" target="_blank" rel="noreferrer">${linkLabel}</a>
-    </div>`;
 }
 
 function openDrawer(id) {
@@ -382,7 +441,7 @@ function openDrawer(id) {
   if (!item) return;
 
   const history = buildDetectionHistory(item);
-  const firstAd = item.adsData[0];
+  const statusDef = STATUS_DEFS[item.status];
 
   ui.drawerTitle.textContent = item.name;
   ui.drawerContent.innerHTML = `
@@ -390,25 +449,15 @@ function openDrawer(id) {
       <div class="source-badges">
         ${riskTag(item.risk)}
         ${sourceBadges(item)}
-        <span class="badge badge--${item.status}">${labelMap.status[item.status]}</span>
+        ${statusBadge(item.status)}
       </div>
     </section>
 
     <section class="drawer-section">
-      <h3 class="section-title">截圖證據</h3>
-      <div class="evidence-grid">
-        ${evidencePlaceholder('帳號截圖', item.pageUrl, '開啟粉絲頁 ↗')}
-        ${firstAd
-          ? evidencePlaceholder('廣告截圖', firstAd.adUrl, '開啟廣告 ↗')
-          : `<div class="evidence-item">
-               <div class="evidence-caption"><span>廣告截圖</span></div>
-               <div class="empty-mini">此案件目前無關聯廣告</div>
-             </div>`}
-      </div>
-    </section>
-
-    <section class="drawer-section">
-      <h3 class="section-title">粉絲頁資訊</h3>
+      <h3 class="section-title">
+        粉絲頁資訊
+        ${eyeButton('page', item.pageId, `查看「${item.name}」的粉絲頁截圖`, 'eye-button--section')}
+      </h3>
       <div class="detail-grid">
         <div class="detail-item">
           <span class="detail-label">粉絲頁編號</span>
@@ -423,15 +472,15 @@ function openDrawer(id) {
           <span class="detail-value">${platformIcons(item.platforms)}</span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">搜尋排名</span>
-          <span class="detail-value">${item.rank ?? '不適用'}</span>
+          <span class="detail-label">累積命中次數</span>
+          <span class="detail-value">${item.seenCount}</span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">首次偵測</span>
+          <span class="detail-label">首次爬取時間</span>
           <span class="detail-value">${item.firstDetected}</span>
         </div>
         <div class="detail-item">
-          <span class="detail-label">最後偵測</span>
+          <span class="detail-label" title="最後一次爬取到此案件的時間">最後爬取時間</span>
           <span class="detail-value">${item.lastDetected}</span>
         </div>
         <div class="detail-item detail-item--full">
@@ -439,6 +488,24 @@ function openDrawer(id) {
           <a class="detail-value detail-link" href="${item.pageUrl}" target="_blank" rel="noreferrer">${item.pageUrl}</a>
         </div>
       </div>
+    </section>
+
+    <section class="drawer-section">
+      <h3 class="section-title">關聯廣告 <span>${item.ads} 則</span></h3>
+      ${item.adsData.length ? `
+        <div class="ad-list">
+          ${item.adsData.map((ad) => `
+            <article class="ad-item">
+              <div>
+                <strong>${escapeHtml(ad.title)}</strong>
+                <small>${ad.id} · ${ad.detectedAt} · ${labelMap.risk[ad.risk]}</small>
+              </div>
+              ${eyeButton('ad', ad.id, `查看「${ad.title}」的廣告截圖`)}
+            </article>
+          `).join('')}
+          ${item.ads > item.adsData.length ? `<div class="empty-mini">另有 ${item.ads - item.adsData.length} 則廣告未於 Prototype 展開</div>` : ''}
+        </div>
+      ` : '<div class="empty-mini">目前未找到可關聯的廣告</div>'}
     </section>
 
     <section class="drawer-section">
@@ -455,30 +522,12 @@ function openDrawer(id) {
     </section>
 
     <section class="drawer-section">
-      <h3 class="section-title">關聯廣告 <span>${item.ads} 則</span></h3>
-      ${item.adsData.length ? `
-        <div class="ad-list">
-          ${item.adsData.map((ad) => `
-            <article class="ad-item">
-              <div>
-                <strong>${escapeHtml(ad.title)}</strong>
-                <small>${ad.id} · ${ad.detectedAt} · ${labelMap.risk[ad.risk]}</small>
-              </div>
-              <a href="${ad.adUrl}" target="_blank" rel="noreferrer">查看廣告 ↗</a>
-            </article>
-          `).join('')}
-          ${item.ads > item.adsData.length ? `<div class="empty-mini">另有 ${item.ads - item.adsData.length} 則廣告未於 Prototype 展開</div>` : ''}
-        </div>
-      ` : '<div class="empty-mini">目前未找到可關聯的廣告</div>'}
-    </section>
-
-    <section class="drawer-section">
       <h3 class="section-title">原始偵測紀錄 <span>${history.length} 筆</span></h3>
       <table class="history-table">
         <thead>
           <tr>
             <th scope="col">偵測來源</th>
-            <th scope="col">偵測時間</th>
+            <th scope="col">爬取時間</th>
             <th scope="col">內容</th>
           </tr>
         </thead>
@@ -498,11 +547,11 @@ function openDrawer(id) {
       <h3 class="section-title">案件紀錄</h3>
       <div class="timeline">
         <div class="timeline-item">
-          <strong>${item.status === 'scheduled' ? '已加入 Internal Console 檢舉排程' : `目前狀態：${labelMap.status[item.status]}`}</strong>
-          <span>${item.lastDetected}</span>
+          <strong>目前狀態：${statusDef.label}</strong>
+          <span>${statusDef.hint}</span>
         </div>
         <div class="timeline-item">
-          <strong>最近一次偵測資料更新</strong>
+          <strong>最後爬取時間</strong>
           <span>${item.lastDetected}</span>
         </div>
         <div class="timeline-item">
@@ -513,10 +562,7 @@ function openDrawer(id) {
     </section>
   `;
 
-  ui.scheduleButton.disabled = item.status === 'scheduled';
-  ui.scheduleButton.textContent = item.status === 'scheduled' ? '已加入檢舉排程' : '加入檢舉排程';
-  ui.ignoreButton.disabled = item.status === 'ignored';
-  ui.ignoreButton.textContent = item.status === 'ignored' ? '已標記忽略' : '標記忽略';
+  ui.statusSelect.value = item.status;
   ui.drawerBackdrop.hidden = false;
   ui.drawer.setAttribute('aria-hidden', 'false');
   // 強制 reflow，讓 transform 動畫確實從關閉狀態開始（同步，不依賴 rAF）
@@ -534,40 +580,73 @@ function closeDrawer() {
   }, 230);
 }
 
-/* ---------- 排程 / 忽略 ---------- */
-function openScheduleModal() {
+/* ---------- 狀態變更 ---------- */
+function openStatusModal(nextStatus) {
   const item = getCurrentCase();
-  if (!item || item.status === 'scheduled') return;
+  if (!item || !STATUS_DEFS[nextStatus] || item.status === nextStatus) return;
+  state.pendingStatus = nextStatus;
+  const from = STATUS_DEFS[item.status];
+  const to = STATUS_DEFS[nextStatus];
   ui.modalSummary.innerHTML = `
     <div class="modal-summary-row"><span>粉絲頁</span><strong>${escapeHtml(item.name)}</strong></div>
     <div class="modal-summary-row"><span>粉絲頁編號</span><strong>${item.pageId}</strong></div>
     <div class="modal-summary-row"><span>關聯廣告</span><strong>${item.ads} 則</strong></div>
-    <div class="modal-summary-row"><span>偽冒風險程度</span><strong>${labelMap.risk[item.risk]}</strong></div>
+    <div class="modal-summary-row"><span>狀態變更</span><strong>${from.label} → ${to.label}</strong></div>
+    <div class="modal-summary-row"><span>狀態定義</span><strong>${to.hint}</strong></div>
   `;
   ui.modalBackdrop.hidden = false;
 }
 
 function closeModal() {
   ui.modalBackdrop.hidden = true;
+  // 取消時把下拉拉回目前實際狀態
+  const item = getCurrentCase();
+  if (item) ui.statusSelect.value = item.status;
+  state.pendingStatus = null;
 }
 
-function confirmSchedule() {
+function confirmStatusChange() {
   const item = getCurrentCase();
-  if (!item) return;
-  item.status = 'scheduled';
-  closeModal();
+  const nextStatus = state.pendingStatus;
+  if (!item || !nextStatus) return;
+  item.status = nextStatus;
+  state.pendingStatus = null;
+  ui.modalBackdrop.hidden = true;
   render();
   openDrawer(item.id);
-  showToast('已將粉絲頁與關聯廣告加入 Internal Console 檢舉排程（Prototype）');
+  showToast(`已將案件狀態更新為「${STATUS_DEFS[nextStatus].label}」（Prototype）`);
 }
 
-function markIgnored() {
-  const item = getCurrentCase();
-  if (!item || item.status === 'ignored') return;
-  item.status = 'ignored';
-  render();
-  openDrawer(item.id);
-  showToast('案件已移至「可忽略社群廣告清單」（Prototype）');
+/* ---------- 截圖檢視（廣告不對外開連結） ---------- */
+function findAd(adId) {
+  for (const item of cases) {
+    const ad = item.adsData.find((row) => row.id === adId);
+    if (ad) return { ad, item };
+  }
+  return null;
+}
+
+function openShot(kind, id) {
+  if (kind === 'page') {
+    const item = cases.find((row) => row.pageId === id);
+    if (!item) return;
+    ui.shotKind.textContent = '粉絲頁截圖';
+    ui.shotTitle.textContent = item.name;
+    ui.shotMeta.textContent = `粉絲頁編號 ${item.pageId} · 最後爬取 ${item.lastDetected}`;
+    ui.shotFootnote.textContent = '截圖為爬取當下留存，僅供人工判讀使用。';
+  } else {
+    const found = findAd(id);
+    if (!found) return;
+    ui.shotKind.textContent = '廣告截圖';
+    ui.shotTitle.textContent = found.ad.title;
+    ui.shotMeta.textContent = `廣告編號 ${found.ad.id} · 偵測日期 ${found.ad.detectedAt} · ${labelMap.risk[found.ad.risk]} Risk`;
+    ui.shotFootnote.textContent = '廣告原始連結僅保留於 Internal Console，前端不對外提供。';
+  }
+  ui.shotBackdrop.hidden = false;
+}
+
+function closeShot() {
+  ui.shotBackdrop.hidden = true;
 }
 
 let toastTimer;
@@ -580,6 +659,18 @@ function showToast(message) {
     ui.toast.classList.remove('is-visible');
     ui.toast.setAttribute('aria-hidden', 'true');
   }, 2600);
+}
+
+/* ---------- 日期下拉 ---------- */
+function updateDateLabel() {
+  const format = (value) => value.replaceAll('-', '/');
+  ui.dateLabel.textContent = `${format(ui.dateFrom.value)} - ${format(ui.dateTo.value)}`;
+}
+
+function toggleDatePanel(force) {
+  const next = typeof force === 'boolean' ? force : ui.datePanel.hidden;
+  ui.datePanel.hidden = !next;
+  ui.dateToggle.setAttribute('aria-expanded', String(next));
 }
 
 /* ---------- 快速日期 ---------- */
@@ -596,6 +687,8 @@ function setQuickRange(range) {
   }
   ui.dateFrom.value = formatDateInput(start);
   ui.dateTo.value = formatDateInput(end);
+  updateDateLabel();
+  toggleDatePanel(false);
   showToast('已更新日期範圍；Prototype 使用固定假資料');
 }
 
@@ -609,8 +702,8 @@ function exportCsv() {
 
   const headers = [
     '粉絲頁名稱', '粉絲頁編號', '粉絲頁追蹤者數', '偽冒風險程度', '風險判斷理由',
-    '資料來源', '投放平台', '處理狀態', '首次偵測', '最後偵測', '累積命中次數', '搜尋排名', '粉絲頁連結',
-    '廣告編號', '廣告文案', '廣告風險', '廣告偵測日期', '廣告連結'
+    '資料來源', '投放平台', '處理狀態', '首次爬取時間', '最後爬取時間', '累積命中次數', '粉絲頁連結',
+    '廣告編號', '廣告文案', '廣告風險', '廣告偵測日期'
   ];
 
   const lines = [headers];
@@ -627,15 +720,14 @@ function exportCsv() {
       item.firstDetected,
       item.lastDetected,
       item.seenCount,
-      item.rank ?? '不適用',
       item.pageUrl
     ];
     if (!item.adsData.length) {
-      lines.push([...base, '', '', '', '', '']);
+      lines.push([...base, '', '', '', '']);
       return;
     }
     item.adsData.forEach((ad) => {
-      lines.push([...base, ad.id, ad.title, labelMap.risk[ad.risk], ad.detectedAt, ad.adUrl]);
+      lines.push([...base, ad.id, ad.title, labelMap.risk[ad.risk], ad.detectedAt]);
     });
   });
 
@@ -694,17 +786,10 @@ bindSortHandlers(ui.caseTable, 'sort', () => {
   renderTable();
 });
 
-bindSortHandlers(ui.ignoredTable, 'ignoredSort', renderIgnoredTable);
-
 ui.tableSearch.addEventListener('input', (event) => {
   state.keyword = event.target.value;
   state.page = 1;
   render();
-});
-
-ui.ignoredSearch.addEventListener('input', (event) => {
-  state.ignoredKeyword = event.target.value;
-  renderIgnoredTable();
 });
 
 ui.pageSize.addEventListener('change', (event) => {
@@ -726,6 +811,11 @@ ui.nextPage.addEventListener('click', () => {
 });
 
 function handleTableClick(event) {
+  const shot = event.target.closest('[data-shot]');
+  if (shot) {
+    openShot(shot.dataset.shot, shot.dataset.shotId);
+    return;
+  }
   const toggle = event.target.closest('[data-toggle-case]');
   if (toggle) {
     const id = toggle.dataset.toggleCase;
@@ -739,25 +829,55 @@ function handleTableClick(event) {
 }
 
 ui.tableBody.addEventListener('click', handleTableClick);
-ui.ignoredTableBody.addEventListener('click', handleTableClick);
+
+ui.drawerContent.addEventListener('click', (event) => {
+  const shot = event.target.closest('[data-shot]');
+  if (shot) openShot(shot.dataset.shot, shot.dataset.shotId);
+});
 
 document.querySelector('#closeDrawer').addEventListener('click', closeDrawer);
 ui.drawerBackdrop.addEventListener('click', closeDrawer);
-ui.scheduleButton.addEventListener('click', openScheduleModal);
-ui.ignoreButton.addEventListener('click', markIgnored);
+ui.statusSelect.addEventListener('change', (event) => openStatusModal(event.target.value));
 document.querySelector('#closeModal').addEventListener('click', closeModal);
 document.querySelector('#cancelSchedule').addEventListener('click', closeModal);
-document.querySelector('#confirmSchedule').addEventListener('click', confirmSchedule);
+document.querySelector('#confirmStatus').addEventListener('click', confirmStatusChange);
 ui.modalBackdrop.addEventListener('click', (event) => {
   if (event.target === ui.modalBackdrop) closeModal();
 });
+document.querySelector('#closeShot').addEventListener('click', closeShot);
+ui.shotBackdrop.addEventListener('click', (event) => {
+  if (event.target === ui.shotBackdrop) closeShot();
+});
 document.querySelector('#exportButton').addEventListener('click', exportCsv);
-document.querySelector('#searchButton').addEventListener('click', () => showToast('已套用搜尋條件；Prototype 使用固定假資料'));
 document.querySelectorAll('[data-range]').forEach((button) => button.addEventListener('click', () => setQuickRange(button.dataset.range)));
+
+ui.dateToggle.addEventListener('click', (event) => {
+  event.stopPropagation();
+  toggleDatePanel();
+});
+
+[ui.dateFrom, ui.dateTo].forEach((input) => input.addEventListener('change', () => {
+  updateDateLabel();
+  showToast('已更新日期範圍；Prototype 使用固定假資料');
+}));
+
+ui.activeFilters.addEventListener('click', (event) => {
+  const trigger = event.target.closest('[data-clear-filter]');
+  if (trigger) clearFilter(trigger.dataset.clearFilter);
+});
+
+// 點日期面板外面就收起來
+document.addEventListener('click', (event) => {
+  if (ui.datePanel.hidden) return;
+  if (event.target.closest('.date-dropdown')) return;
+  toggleDatePanel(false);
+});
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
-    if (!ui.modalBackdrop.hidden) closeModal();
+    if (!ui.datePanel.hidden) toggleDatePanel(false);
+    else if (!ui.shotBackdrop.hidden) closeShot();
+    else if (!ui.modalBackdrop.hidden) closeModal();
     else if (ui.drawer.classList.contains('is-open')) closeDrawer();
   }
 });

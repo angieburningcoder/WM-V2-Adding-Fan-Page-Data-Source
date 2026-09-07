@@ -1,5 +1,6 @@
 // 案件以「粉絲頁」為主體；每個案件底下掛關聯廣告與原始偵測歷程。
-// 註：偵測用的關鍵字不在前端呈現，避免被反向利用。
+// 註 1：偵測用的關鍵字不在前端呈現，避免被反向利用。
+// 註 2：廣告不提供對外連結（Ads Library），只在 Internal Console 保留；前端僅提供截圖檢視。
 const cases = [
   {
     id: 'WM-202607-001',
@@ -15,13 +16,12 @@ const cases = [
     firstDetected: '2026/07/04 00:18',
     risk: 'high',
     reasons: ['粉專名稱與官方品牌高度相似', '關聯 10 則高風險 Meta Ads', '頁面缺乏官方認證標記'],
-    status: 'confirmed',
-    rank: 3,
+    status: 'submitted',
     seenCount: 4,
     adsData: [
-      { id: '134663071068724', title: 'Tenda Wi-Fi 限時優惠', detectedAt: '2026/07/24', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=134663071068724' },
-      { id: '23507155694804', title: '官方客服抽獎活動', detectedAt: '2026/07/23', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=23507155694804' },
-      { id: '92180515908313', title: '限量路由器免費領取', detectedAt: '2026/07/22', risk: 'medium', adUrl: 'https://facebook.com/ads/library/?id=92180515908313' }
+      { id: '134663071068724', title: 'Tenda Wi-Fi 限時優惠', detectedAt: '2026/07/24', risk: 'high' },
+      { id: '23507155694804', title: '官方客服抽獎活動', detectedAt: '2026/07/23', risk: 'high' },
+      { id: '92180515908313', title: '限量路由器免費領取', detectedAt: '2026/07/22', risk: 'medium' }
     ]
   },
   {
@@ -38,8 +38,7 @@ const cases = [
     firstDetected: '2026/07/17 00:11',
     risk: 'medium',
     reasons: ['粉專名稱與官方品牌部分重疊', '尚未找到可關聯的 Meta Ads', '需人工確認是否為授權通路'],
-    status: 'pending',
-    rank: 7,
+    status: 'scheduled',
     seenCount: 2,
     adsData: []
   },
@@ -57,12 +56,11 @@ const cases = [
     firstDetected: '2026/07/08 12:02',
     risk: 'high',
     reasons: ['關聯 4 則高風險 Meta Ads', '廣告文案具投資招攬特徵', '尚未由粉專搜尋再次命中'],
-    status: 'scheduled',
-    rank: null,
+    status: 'accepted',
     seenCount: 5,
     adsData: [
-      { id: '104180604863443', title: '每日穩定獲利群組', detectedAt: '2026/07/23', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=104180604863443' },
-      { id: '136055733265029', title: '老師帶單免費加入', detectedAt: '2026/07/21', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=136055733265029' }
+      { id: '104180604863443', title: '每日穩定獲利群組', detectedAt: '2026/07/23', risk: 'high' },
+      { id: '136055733265029', title: '老師帶單免費加入', detectedAt: '2026/07/21', risk: 'high' }
     ]
   },
   {
@@ -79,12 +77,11 @@ const cases = [
     firstDetected: '2026/07/15 00:15',
     risk: 'high',
     reasons: ['粉專名稱使用知名地標名稱', '關聯 3 則高風險 Meta Ads', '頁面名稱近期曾發生變更'],
-    status: 'pending',
-    rank: 2,
+    status: 'scheduled',
     seenCount: 3,
     adsData: [
-      { id: '1754301552372183', title: '周年慶免費贈品', detectedAt: '2026/07/22', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=1754301552372183' },
-      { id: '2130851590831323', title: '填問卷抽萬元禮券', detectedAt: '2026/07/20', risk: 'medium', adUrl: 'https://facebook.com/ads/library/?id=2130851590831323' }
+      { id: '1754301552372183', title: '周年慶免費贈品', detectedAt: '2026/07/22', risk: 'high' },
+      { id: '2130851590831323', title: '填問卷抽萬元禮券', detectedAt: '2026/07/20', risk: 'medium' }
     ]
   },
   {
@@ -101,8 +98,7 @@ const cases = [
     firstDetected: '2026/07/21 00:08',
     risk: 'low',
     reasons: ['名稱僅部分相似', '無關聯廣告', '目前缺乏其他偽冒證據'],
-    status: 'ignored',
-    rank: 28,
+    status: 'not_submitted',
     seenCount: 1,
     adsData: []
   },
@@ -120,12 +116,11 @@ const cases = [
     firstDetected: '2026/07/12 12:04',
     risk: 'medium',
     reasons: ['關聯 2 則可疑 Meta Ads', '廣告導向非官方表單', '未由粉專搜尋命中'],
-    status: 'confirmed',
-    rank: null,
+    status: 'submitted',
     seenCount: 3,
     adsData: [
-      { id: '1374009451253891', title: '線上客服認證', detectedAt: '2026/07/20', risk: 'medium', adUrl: 'https://facebook.com/ads/library/?id=1374009451253891' },
-      { id: '57401559883123', title: '帳號異常驗證', detectedAt: '2026/07/19', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=57401559883123' }
+      { id: '1374009451253891', title: '線上客服認證', detectedAt: '2026/07/20', risk: 'medium' },
+      { id: '57401559883123', title: '帳號異常驗證', detectedAt: '2026/07/19', risk: 'high' }
     ]
   },
   {
@@ -142,13 +137,12 @@ const cases = [
     firstDetected: '2026/07/10 00:10',
     risk: 'high',
     reasons: ['冒用政府機關名稱與識別', '關聯 6 則要求填寫個資的廣告', '粉專不在官方白名單'],
-    status: 'scheduled',
-    rank: 1,
+    status: 'success',
     seenCount: 5,
     adsData: [
-      { id: '881330172048233', title: '縣民補助金申請', detectedAt: '2026/07/24', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=881330172048233' },
-      { id: '881330172048234', title: '育兒津貼加碼登記', detectedAt: '2026/07/24', risk: 'high', adUrl: 'https://facebook.com/ads/library/?id=881330172048234' },
-      { id: '881330172048235', title: '長者福利領取通知', detectedAt: '2026/07/23', risk: 'medium', adUrl: 'https://facebook.com/ads/library/?id=881330172048235' }
+      { id: '881330172048233', title: '縣民補助金申請', detectedAt: '2026/07/24', risk: 'high' },
+      { id: '881330172048234', title: '育兒津貼加碼登記', detectedAt: '2026/07/24', risk: 'high' },
+      { id: '881330172048235', title: '長者福利領取通知', detectedAt: '2026/07/23', risk: 'medium' }
     ]
   },
   {
@@ -165,8 +159,7 @@ const cases = [
     firstDetected: '2026/07/19 00:16',
     risk: 'low',
     reasons: ['名稱為一般地方社群', '無官方機關誤導詞', '無關聯 Meta Ads'],
-    status: 'pending',
-    rank: 44,
+    status: 'scheduled',
     seenCount: 1,
     adsData: []
   },
@@ -184,11 +177,10 @@ const cases = [
     firstDetected: '2026/07/11 00:22',
     risk: 'low',
     reasons: ['經人工確認為官方授權單位', '廣告內容為活動宣傳', '已加入白名單候選'],
-    status: 'ignored',
-    rank: 15,
+    status: 'false_positive',
     seenCount: 2,
     adsData: [
-      { id: '1083205593207913', title: '志工招募說明會', detectedAt: '2026/07/18', risk: 'low', adUrl: 'https://facebook.com/ads/library/?id=1083205593207913' }
+      { id: '1083205593207913', title: '志工招募說明會', detectedAt: '2026/07/18', risk: 'low' }
     ]
   },
   {
@@ -205,12 +197,53 @@ const cases = [
     firstDetected: '2026/07/09 12:40',
     risk: 'low',
     reasons: ['廣告導向合法電商平台', '名稱未冒用官方識別', '人工確認為一般商家'],
-    status: 'ignored',
-    rank: null,
+    status: 'false_positive',
     seenCount: 2,
     adsData: [
-      { id: '1490318431621455', title: '產地直送蔬菜箱', detectedAt: '2026/07/16', risk: 'low', adUrl: 'https://facebook.com/ads/library/?id=1490318431621455' },
-      { id: '499174615989052', title: '夏季水果預購', detectedAt: '2026/07/15', risk: 'low', adUrl: 'https://facebook.com/ads/library/?id=499174615989052' }
+      { id: '1490318431621455', title: '產地直送蔬菜箱', detectedAt: '2026/07/16', risk: 'low' },
+      { id: '499174615989052', title: '夏季水果預購', detectedAt: '2026/07/15', risk: 'low' }
+    ]
+  },
+  {
+    id: 'WM-202607-011',
+    name: '威秀影城購票中心 Vieshow',
+    pageId: '1187720453398821',
+    pageUrl: 'https://facebook.com/vieshow-ticket-center',
+    followers: 4038,
+    platforms: ['facebook', 'instagram'],
+    sources: ['fan-page', 'meta-ads'],
+    ads: 5,
+    adsBreakdown: { high: 4, medium: 1, low: 0 },
+    lastDetected: '2026/07/23 09:12',
+    firstDetected: '2026/07/06 00:20',
+    risk: 'high',
+    reasons: ['直接冒用官方品牌名稱', '關聯 5 則導向假購票頁的廣告', 'Meta 判定不違反社群守則'],
+    status: 'failed',
+    seenCount: 4,
+    adsData: [
+      { id: '1783440255120391', title: '早鳥票 5 折限時搶購', detectedAt: '2026/07/23', risk: 'high' },
+      { id: '1783440255120392', title: '會員專屬爆米花兌換', detectedAt: '2026/07/21', risk: 'high' }
+    ]
+  },
+  {
+    id: 'WM-202607-012',
+    name: '影城好禮兌換小站',
+    pageId: '1442905573912284',
+    pageUrl: 'https://facebook.com/movie-gift-station',
+    followers: 733,
+    platforms: ['facebook', 'messenger'],
+    sources: ['meta-ads'],
+    ads: 3,
+    adsBreakdown: { high: 2, medium: 1, low: 0 },
+    lastDetected: '2026/07/17 12:35',
+    firstDetected: '2026/07/05 12:31',
+    risk: 'medium',
+    reasons: ['廣告冒用影城好禮名義', '導向要求填寫個資的表單', '粉專於偵測期間已無法存取'],
+    status: 'takedown_confirmed',
+    seenCount: 3,
+    adsData: [
+      { id: '1092338451117640', title: '看電影抽家電大獎', detectedAt: '2026/07/17', risk: 'high' },
+      { id: '1092338451117641', title: '免費兌換雙人套票', detectedAt: '2026/07/15', risk: 'medium' }
     ]
   }
 ];
