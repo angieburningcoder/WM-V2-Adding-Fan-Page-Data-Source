@@ -736,7 +736,7 @@ function exportCsv() {
     .join('\n');
 
   const client = ui.clientName.textContent.trim();
-  const fileName = `${ui.dateFrom.value} 至 ${ui.dateTo.value} ${client}-可疑社群廣告清單.csv`;
+  const fileName = `${ui.dateFrom.value} 至 ${ui.dateTo.value} ${client}-可疑粉絲頁清單.csv`;
 
   const blob = new Blob([`﻿${csv}`], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);

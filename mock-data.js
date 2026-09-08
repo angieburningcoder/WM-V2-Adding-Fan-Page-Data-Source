@@ -15,7 +15,7 @@ const cases = [
     lastDetected: '2026/07/24 09:10',
     firstDetected: '2026/07/04 00:18',
     risk: 'high',
-    reasons: ['粉專名稱與官方品牌高度相似', '關聯 10 則高風險 Meta Ads', '頁面缺乏官方認證標記'],
+    reasons: ['粉絲頁名稱與官方品牌高度相似', '關聯 10 則高風險 Meta Ads', '頁面缺乏官方認證標記'],
     status: 'submitted',
     seenCount: 4,
     adsData: [
@@ -37,7 +37,7 @@ const cases = [
     lastDetected: '2026/07/24 09:10',
     firstDetected: '2026/07/17 00:11',
     risk: 'medium',
-    reasons: ['粉專名稱與官方品牌部分重疊', '尚未找到可關聯的 Meta Ads', '需人工確認是否為授權通路'],
+    reasons: ['粉絲頁名稱與官方品牌部分重疊', '尚未找到可關聯的 Meta Ads', '需人工確認是否為授權通路'],
     status: 'scheduled',
     seenCount: 2,
     adsData: []
@@ -76,7 +76,7 @@ const cases = [
     lastDetected: '2026/07/22 00:15',
     firstDetected: '2026/07/15 00:15',
     risk: 'high',
-    reasons: ['粉專名稱使用知名地標名稱', '關聯 3 則高風險 Meta Ads', '頁面名稱近期曾發生變更'],
+    reasons: ['粉絲頁名稱使用知名地標名稱', '關聯 3 則高風險 Meta Ads', '頁面名稱近期曾發生變更'],
     status: 'scheduled',
     seenCount: 3,
     adsData: [
@@ -136,7 +136,7 @@ const cases = [
     lastDetected: '2026/07/24 09:10',
     firstDetected: '2026/07/10 00:10',
     risk: 'high',
-    reasons: ['冒用政府機關名稱與識別', '關聯 6 則要求填寫個資的廣告', '粉專不在官方白名單'],
+    reasons: ['冒用政府機關名稱與識別', '關聯 6 則要求填寫個資的廣告', '粉絲頁不在官方白名單'],
     status: 'success',
     seenCount: 5,
     adsData: [
@@ -238,7 +238,7 @@ const cases = [
     lastDetected: '2026/07/17 12:35',
     firstDetected: '2026/07/05 12:31',
     risk: 'medium',
-    reasons: ['廣告冒用影城好禮名義', '導向要求填寫個資的表單', '粉專於偵測期間已無法存取'],
+    reasons: ['廣告冒用影城好禮名義', '導向要求填寫個資的表單', '粉絲頁於偵測期間已無法存取'],
     status: 'takedown_confirmed',
     seenCount: 3,
     adsData: [
