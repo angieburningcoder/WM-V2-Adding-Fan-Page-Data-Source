@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Watchmen V2 多來源社群偽冒偵測前端 Prototype" />
   <title>Watchmen V2｜社群媒體監測</title>
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=8" />
 </head>
 <body>
   <div class="app-shell">
@@ -100,7 +100,7 @@
 
           <div class="section-heading">
             <h2>社群媒體總覽</h2>
-            <button class="help-button" type="button" data-tooltip="整合粉專搜尋與 Meta Ads 兩種偵測來源，以粉絲頁為案件主體呈現。" aria-label="頁面說明">
+            <button class="help-button" type="button" data-tooltip="整合 Fan Page 與 Meta Ads 兩種偵測來源，以粉絲頁為案件主體呈現。" aria-label="頁面說明">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z"/></svg>
             </button>
             <span class="prototype-badge">FE Prototype</span>
@@ -170,7 +170,7 @@
 
                 <select id="sourceFilter" class="filter-select" aria-label="資料來源">
                   <option value="all">資料來源：全部</option>
-                  <option value="fan-page">粉專搜尋</option>
+                  <option value="fan-page">Fan Page</option>
                   <option value="meta-ads">Meta Ads</option>
                   <option value="both">雙來源命中</option>
                 </select>
@@ -321,7 +321,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite" aria-hidden="true"></div>
 
-  <script src="mock-data.js?v=5"></script>
-  <script src="app.js?v=5"></script>
+  <script src="mock-data.js?v=8"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>

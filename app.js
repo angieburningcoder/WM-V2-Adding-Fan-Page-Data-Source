@@ -29,9 +29,9 @@ function buildDetectionHistory(item) {
     ? Array.from({ length: hitCount }, (_, index) => {
       const ratio = hitCount === 1 ? 1 : index / (hitCount - 1);
       return {
-        source: '粉專搜尋',
+        source: 'Fan Page',
         detectedAt: formatDetectedDate(new Date(start.getTime() + spanMs * ratio)),
-        detail: '粉專搜尋命中'
+        detail: 'Fan Page 命中'
       };
     }).reverse()
     : [];
@@ -116,7 +116,7 @@ const STATUS_DEFS = {
 const labelMap = {
   risk: { high: 'High', medium: 'Medium', low: 'Low' },
   status: Object.fromEntries(Object.entries(STATUS_DEFS).map(([key, def]) => [key, def.label])),
-  source: { 'fan-page': '粉專搜尋', 'meta-ads': 'Meta Ads' },
+  source: { 'fan-page': 'Fan Page', 'meta-ads': 'Meta Ads' },
   platform: { facebook: 'Facebook', instagram: 'Instagram', messenger: 'Messenger', threads: 'Threads', audience_network: 'Audience Network' }
 };
 

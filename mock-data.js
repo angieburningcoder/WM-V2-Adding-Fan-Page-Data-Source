@@ -55,7 +55,7 @@ const cases = [
     lastDetected: '2026/07/23 12:05',
     firstDetected: '2026/07/08 12:02',
     risk: 'high',
-    reasons: ['關聯 4 則高風險 Meta Ads', '廣告文案具投資招攬特徵', '尚未由粉專搜尋再次命中'],
+    reasons: ['關聯 4 則高風險 Meta Ads', '廣告文案具投資招攬特徵', '尚未由 Fan Page 再次命中'],
     status: 'accepted',
     seenCount: 5,
     adsData: [
@@ -115,7 +115,7 @@ const cases = [
     lastDetected: '2026/07/20 12:03',
     firstDetected: '2026/07/12 12:04',
     risk: 'medium',
-    reasons: ['關聯 2 則可疑 Meta Ads', '廣告導向非官方表單', '未由粉專搜尋命中'],
+    reasons: ['關聯 2 則可疑 Meta Ads', '廣告導向非官方表單', '未由 Fan Page 命中'],
     status: 'submitted',
     seenCount: 3,
     adsData: [
