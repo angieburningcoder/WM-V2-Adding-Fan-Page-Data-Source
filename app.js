@@ -177,6 +177,43 @@ function formatNumber(value) {
   return value.toLocaleString('en-US');
 }
 
+/* ---------- 粉絲頁屬性（僅展示，不計入風險分數） ---------- */
+// 類別、管理者所在地都可能多個，一律用 chips
+function chipList(values) {
+  return `<span class="chip-list">${values
+    .map((v) => `<span class="badge badge--source">${escapeHtml(v)}</span>`)
+    .join('')}</span>`;
+}
+
+// 認證僅指官方藍勾
+function verifiedBadge(verified) {
+  return verified
+    ? '<span class="badge badge--success">已認證</span>'
+    : '<span class="badge badge--neutral">未認證</span>';
+}
+
+// 最後更名時間 = 改名歷程最新一筆
+function lastNameChangedAt(item) {
+  return item.nameHistory.length ? item.nameHistory[item.nameHistory.length - 1].changedAt : '未曾更名';
+}
+
+// 改名歷程為完整紀錄，預設收合，新到舊排列
+function nameHistoryBlock(item) {
+  if (!item.nameHistory.length) return '<span class="detail-value">未曾更名</span>';
+  return `<details class="name-history">
+    <summary>共 ${item.nameHistory.length} 次更名</summary>
+    <ol>
+      ${[...item.nameHistory].reverse().map((h) => `
+        <li><span class="name-history-date">${h.changedAt}</span>${escapeHtml(h.from)} → ${escapeHtml(h.to)}</li>
+      `).join('')}
+    </ol>
+  </details>`;
+}
+
+function formatNameHistory(item) {
+  return item.nameHistory.map((h) => `${h.changedAt} ${h.from} → ${h.to}`).join('；');
+}
+
 // 廣告不對外開連結，只用眼睛開啟截圖檢視
 function eyeButton(kind, id, label, extraClass = '') {
   return `<button class="eye-button ${extraClass}" type="button" data-shot="${kind}" data-shot-id="${id}" title="${escapeHtml(label)}" aria-label="${escapeHtml(label)}">
@@ -483,6 +520,50 @@ function openDrawer(id) {
           <span class="detail-label" title="最後一次爬取到此案件的時間">最後爬取時間</span>
           <span class="detail-value">${item.lastDetected}</span>
         </div>
+        <div class="detail-item">
+          <span class="detail-label">是否認證</span>
+          <span class="detail-value">${verifiedBadge(item.verified)}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">粉絲頁建立時間</span>
+          <span class="detail-value">${item.pageCreatedAt}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">是否正在刊登廣告</span>
+          <span class="detail-value">${item.runningAds ? '是' : '否'}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">最後更名時間</span>
+          <span class="detail-value">${lastNameChangedAt(item)}</span>
+        </div>
+        <div class="detail-item detail-item--full">
+          <span class="detail-label">類別</span>
+          ${chipList(item.categories)}
+        </div>
+        <div class="detail-item detail-item--full">
+          <span class="detail-label">管理者所在地</span>
+          ${chipList(item.adminLocations)}
+        </div>
+        <div class="detail-item detail-item--full">
+          <span class="detail-label">改名歷程</span>
+          ${nameHistoryBlock(item)}
+        </div>
+        <div class="detail-item detail-item--full">
+          <span class="detail-label">About</span>
+          <span class="detail-value">${escapeHtml(item.about)}</span>
+        </div>
+        <div class="detail-item detail-item--full">
+          <span class="detail-label">Bio</span>
+          <span class="detail-value">${escapeHtml(item.bio)}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Email</span>
+          <span class="detail-value">${escapeHtml(item.email)}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Phone</span>
+          <span class="detail-value">${escapeHtml(item.phone)}</span>
+        </div>
         <div class="detail-item detail-item--full">
           <span class="detail-label">粉絲頁連結</span>
           <a class="detail-value detail-link" href="${item.pageUrl}" target="_blank" rel="noreferrer">${item.pageUrl}</a>
@@ -703,6 +784,8 @@ function exportCsv() {
   const headers = [
     '粉絲頁名稱', '粉絲頁編號', '粉絲頁追蹤者數', '偽冒風險程度', '風險判斷理由',
     '資料來源', '投放平台', '處理狀態', '首次爬取時間', '最後爬取時間', '累積命中次數', '粉絲頁連結',
+    '是否認證', '粉絲頁建立時間', '類別', '管理者所在地', '改名歷程', '最後更名時間',
+    'About', 'Bio', 'Email', 'Phone', '是否正在刊登廣告',
     '廣告編號', '廣告文案', '廣告風險', '廣告偵測日期'
   ];
 
@@ -720,7 +803,18 @@ function exportCsv() {
       item.firstDetected,
       item.lastDetected,
       item.seenCount,
-      item.pageUrl
+      item.pageUrl,
+      item.verified ? '已認證' : '未認證',
+      item.pageCreatedAt,
+      item.categories.join(' / '),
+      item.adminLocations.join(' / '),
+      formatNameHistory(item),
+      lastNameChangedAt(item),
+      item.about,
+      item.bio,
+      item.email,
+      item.phone,
+      item.runningAds ? '是' : '否'
     ];
     if (!item.adsData.length) {
       lines.push([...base, '', '', '', '']);

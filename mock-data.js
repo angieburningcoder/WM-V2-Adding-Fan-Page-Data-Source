@@ -1,6 +1,7 @@
 // 案件以「粉絲頁」為主體；每個案件底下掛關聯廣告與原始偵測歷程。
 // 註 1：偵測用的關鍵字不在前端呈現，避免被反向利用。
 // 註 2：廣告不提供對外連結（Ads Library），只在 Internal Console 保留；前端僅提供截圖檢視。
+// 註 3：粉絲頁屬性（認證、建立時間、類別、管理者所在地、改名歷程、About/Bio、聯絡方式、是否刊登廣告）僅供展示，不計入風險分數。
 const cases = [
   {
     id: 'WM-202607-001',
@@ -15,9 +16,22 @@ const cases = [
     lastDetected: '2026/07/24 09:10',
     firstDetected: '2026/07/04 00:18',
     risk: 'high',
-    reasons: ['粉絲頁名稱與官方品牌高度相似', '關聯 10 則高風險 Meta Ads', '頁面缺乏官方認證標記'],
+    reasons: ['粉絲頁名稱與官方品牌高度相似', '關聯 10 則高風險 Meta Ads', '粉絲頁曾更名 2 次'],
     status: 'submitted',
     seenCount: 4,
+    verified: false,
+    pageCreatedAt: '2026/06/28',
+    categories: ['購物零售', '電子產品'],
+    adminLocations: ['越南', '台灣'],
+    nameHistory: [
+      { from: '小資生活好物', to: 'Tenda Wi-Fi 優惠站', changedAt: '2026/06/30' },
+      { from: 'Tenda Wi-Fi 優惠站', to: 'Tenda24 智慧商城', changedAt: '2026/07/03' }
+    ],
+    about: '全台最低價網通商城，限時優惠中',
+    bio: '官方授權經銷・私訊客服領取優惠',
+    email: 'service.tenda24@gmail.com',
+    phone: '+84 912 345 678',
+    runningAds: true,
     adsData: [
       { id: '134663071068724', title: 'Tenda Wi-Fi 限時優惠', detectedAt: '2026/07/24', risk: 'high' },
       { id: '23507155694804', title: '官方客服抽獎活動', detectedAt: '2026/07/23', risk: 'high' },
@@ -40,6 +54,16 @@ const cases = [
     reasons: ['粉絲頁名稱與官方品牌部分重疊', '尚未找到可關聯的 Meta Ads', '需人工確認是否為授權通路'],
     status: 'scheduled',
     seenCount: 2,
+    verified: false,
+    pageCreatedAt: '2026/07/10',
+    categories: ['購物零售'],
+    adminLocations: ['中國'],
+    nameHistory: [],
+    about: 'Zmaewe 智慧商城提供各式 3C 家電',
+    bio: '全館免運・貨到付款',
+    email: 'zmaewe.mall@gmail.com',
+    phone: '+86 138 0013 8000',
+    runningAds: true,
     adsData: []
   },
   {
@@ -58,6 +82,18 @@ const cases = [
     reasons: ['關聯 4 則高風險 Meta Ads', '廣告文案具投資招攬特徵', '尚未由 Fan Page 再次命中'],
     status: 'accepted',
     seenCount: 5,
+    verified: false,
+    pageCreatedAt: '2026/05/02',
+    categories: ['金融服務', '教育'],
+    adminLocations: ['柬埔寨', '泰國'],
+    nameHistory: [
+      { from: 'Lovely Pet Shop', to: 'Blupatlgielovo Stewuntmabim', changedAt: '2026/07/01' }
+    ],
+    about: '專業投資團隊帶你穩定獲利',
+    bio: '每日分享飆股資訊，加 LINE 領取',
+    email: 'blupat.invest@outlook.com',
+    phone: '+855 23 456 789',
+    runningAds: true,
     adsData: [
       { id: '104180604863443', title: '每日穩定獲利群組', detectedAt: '2026/07/23', risk: 'high' },
       { id: '136055733265029', title: '老師帶單免費加入', detectedAt: '2026/07/21', risk: 'high' }
@@ -79,6 +115,18 @@ const cases = [
     reasons: ['粉絲頁名稱使用知名地標名稱', '關聯 3 則高風險 Meta Ads', '頁面名稱近期曾發生變更'],
     status: 'scheduled',
     seenCount: 3,
+    verified: false,
+    pageCreatedAt: '2026/07/08',
+    categories: ['旅遊景點', '購物零售'],
+    adminLocations: ['台灣', '馬來西亞'],
+    nameHistory: [
+      { from: 'Fkwhyx2', to: '台北101體驗店 Fkwhyx2', changedAt: '2026/07/14' }
+    ],
+    about: '台北101周年慶體驗活動',
+    bio: '填問卷即可參加抽獎',
+    email: 'tpe101.event@gmail.com',
+    phone: '+60 12 345 6789',
+    runningAds: true,
     adsData: [
       { id: '1754301552372183', title: '周年慶免費贈品', detectedAt: '2026/07/22', risk: 'high' },
       { id: '2130851590831323', title: '填問卷抽萬元禮券', detectedAt: '2026/07/20', risk: 'medium' }
@@ -100,6 +148,16 @@ const cases = [
     reasons: ['名稱僅部分相似', '無關聯廣告', '目前缺乏其他偽冒證據'],
     status: 'not_submitted',
     seenCount: 1,
+    verified: false,
+    pageCreatedAt: '2025/11/20',
+    categories: ['商業服務'],
+    adminLocations: ['台灣'],
+    nameHistory: [],
+    about: '萬鑫鉅量企業社',
+    bio: '批發・代工・大量採購',
+    email: 'fjxov2.biz@gmail.com',
+    phone: '02-2771-8890',
+    runningAds: false,
     adsData: []
   },
   {
@@ -118,6 +176,18 @@ const cases = [
     reasons: ['關聯 2 則可疑 Meta Ads', '廣告導向非官方表單', '未由 Fan Page 命中'],
     status: 'submitted',
     seenCount: 3,
+    verified: false,
+    pageCreatedAt: '2026/03/15',
+    categories: ['資訊科技', '網站'],
+    adminLocations: ['菲律賓'],
+    nameHistory: [
+      { from: 'zcat2', to: '資訊應用測試 zcat2', changedAt: '2026/06/20' }
+    ],
+    about: '帳號安全驗證服務',
+    bio: 'Meta 帳號異常協助處理',
+    email: 'zcat2.support@proton.me',
+    phone: '+63 917 555 0142',
+    runningAds: true,
     adsData: [
       { id: '1374009451253891', title: '線上客服認證', detectedAt: '2026/07/20', risk: 'medium' },
       { id: '57401559883123', title: '帳號異常驗證', detectedAt: '2026/07/19', risk: 'high' }
@@ -139,6 +209,19 @@ const cases = [
     reasons: ['冒用政府機關名稱與識別', '關聯 6 則要求填寫個資的廣告', '粉絲頁不在官方白名單'],
     status: 'success',
     seenCount: 5,
+    verified: false,
+    pageCreatedAt: '2026/06/25',
+    categories: ['政府機關', '社區'],
+    adminLocations: ['台灣', '越南', '柬埔寨'],
+    nameHistory: [
+      { from: '雲林好康分享', to: '雲林縣民福利站', changedAt: '2026/07/01' },
+      { from: '雲林縣民福利站', to: '雲林福利補助專區', changedAt: '2026/07/08' }
+    ],
+    about: '雲林縣民補助、津貼申請資訊',
+    bio: '補助名額有限，請盡速登記',
+    email: 'yunlin.benefit.tw@gmail.com',
+    phone: '+886 912 000 321',
+    runningAds: true,
     adsData: [
       { id: '881330172048233', title: '縣民補助金申請', detectedAt: '2026/07/24', risk: 'high' },
       { id: '881330172048234', title: '育兒津貼加碼登記', detectedAt: '2026/07/24', risk: 'high' },
@@ -161,6 +244,16 @@ const cases = [
     reasons: ['名稱為一般地方社群', '無官方機關誤導詞', '無關聯 Meta Ads'],
     status: 'scheduled',
     seenCount: 1,
+    verified: false,
+    pageCreatedAt: '2019/04/12',
+    categories: ['社區', '新聞媒體'],
+    adminLocations: ['台灣'],
+    nameHistory: [],
+    about: '分享雲林在地生活資訊',
+    bio: '歡迎投稿在地大小事',
+    email: 'yunlin.life.news@gmail.com',
+    phone: '05-532-1188',
+    runningAds: false,
     adsData: []
   },
   {
@@ -179,6 +272,18 @@ const cases = [
     reasons: ['經人工確認為官方授權單位', '廣告內容為活動宣傳', '已加入白名單候選'],
     status: 'false_positive',
     seenCount: 2,
+    verified: true,
+    pageCreatedAt: '2015/08/03',
+    categories: ['政府機關', '非營利組織'],
+    adminLocations: ['台灣'],
+    nameHistory: [
+      { from: '雲林社會處志工', to: '雲林縣政府社會處志工隊', changedAt: '2018/02/10' }
+    ],
+    about: '雲林縣政府社會處志工隊官方粉絲頁',
+    bio: '志工招募與活動資訊',
+    email: 'volunteer@yunlin.gov.tw',
+    phone: '05-552-2000',
+    runningAds: true,
     adsData: [
       { id: '1083205593207913', title: '志工招募說明會', detectedAt: '2026/07/18', risk: 'low' }
     ]
@@ -199,6 +304,16 @@ const cases = [
     reasons: ['廣告導向合法電商平台', '名稱未冒用官方識別', '人工確認為一般商家'],
     status: 'false_positive',
     seenCount: 2,
+    verified: false,
+    pageCreatedAt: '2021/05/18',
+    categories: ['農業', '購物零售'],
+    adminLocations: ['台灣'],
+    nameHistory: [],
+    about: '雲林在地農產，產地直送',
+    bio: '每週二、五出貨',
+    email: 'yunlin.farm@gmail.com',
+    phone: '05-587-6612',
+    runningAds: true,
     adsData: [
       { id: '1490318431621455', title: '產地直送蔬菜箱', detectedAt: '2026/07/16', risk: 'low' },
       { id: '499174615989052', title: '夏季水果預購', detectedAt: '2026/07/15', risk: 'low' }
@@ -220,6 +335,18 @@ const cases = [
     reasons: ['直接冒用官方品牌名稱', '關聯 5 則導向假購票頁的廣告', 'Meta 判定不違反社群守則'],
     status: 'failed',
     seenCount: 4,
+    verified: false,
+    pageCreatedAt: '2026/06/20',
+    categories: ['電影院', '娛樂'],
+    adminLocations: ['中國', '香港'],
+    nameHistory: [
+      { from: '電影情報站', to: '威秀影城購票中心 Vieshow', changedAt: '2026/07/02' }
+    ],
+    about: '威秀影城線上購票與會員優惠',
+    bio: '早鳥票限時 5 折',
+    email: 'vieshow.ticket.tw@gmail.com',
+    phone: '+852 5123 4567',
+    runningAds: true,
     adsData: [
       { id: '1783440255120391', title: '早鳥票 5 折限時搶購', detectedAt: '2026/07/23', risk: 'high' },
       { id: '1783440255120392', title: '會員專屬爆米花兌換', detectedAt: '2026/07/21', risk: 'high' }
@@ -241,6 +368,18 @@ const cases = [
     reasons: ['廣告冒用影城好禮名義', '導向要求填寫個資的表單', '粉絲頁於偵測期間已無法存取'],
     status: 'takedown_confirmed',
     seenCount: 3,
+    verified: false,
+    pageCreatedAt: '2026/06/01',
+    categories: ['娛樂'],
+    adminLocations: ['越南'],
+    nameHistory: [
+      { from: '好禮兌換站', to: '影城好禮兌換小站', changedAt: '2026/06/28' }
+    ],
+    about: '影城好禮、套票兌換',
+    bio: '填寫表單即可兌換',
+    email: 'moviegift.station@gmail.com',
+    phone: '+84 903 111 222',
+    runningAds: false,
     adsData: [
       { id: '1092338451117640', title: '看電影抽家電大獎', detectedAt: '2026/07/17', risk: 'high' },
       { id: '1092338451117641', title: '免費兌換雙人套票', detectedAt: '2026/07/15', risk: 'medium' }
