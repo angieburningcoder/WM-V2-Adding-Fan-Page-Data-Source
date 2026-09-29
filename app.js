@@ -594,7 +594,7 @@ function openDrawer(id) {
       <div class="risk-summary">
         <div class="risk-copy">
           <strong>${labelMap.risk[item.risk]} Risk</strong>
-          <span>由偵測規則與 LLM 判斷產生，以下為命中的判斷理由。</span>
+          <span>由 Rule-based 偵測規則產生，以下為命中的判斷理由。</span>
         </div>
       </div>
       <ul class="reason-list">
