@@ -593,8 +593,8 @@ function openDrawer(id) {
       <h3 class="section-title">風險判斷 ${riskTag(item.risk)}</h3>
       <div class="risk-summary">
         <div class="risk-copy">
-          <strong>${labelMap.risk[item.risk]} Risk</strong>
-          <span>由偵測規則與 LLM 判斷產生，以下為命中的判斷理由。</span>
+          <strong>${labelMap.risk[item.risk]} Risk · ${item.riskScore} 分</strong>
+          <span>依 Rule-based 規則計分，以下為命中的規則與分數。</span>
         </div>
       </div>
       <ul class="reason-list">
@@ -782,7 +782,7 @@ function exportCsv() {
   }
 
   const headers = [
-    '粉絲頁名稱', '粉絲頁編號', '粉絲頁追蹤者數', '偽冒風險程度', '風險判斷理由',
+    'Case ID', '粉絲頁名稱', '粉絲頁編號', '粉絲頁追蹤者數', '偽冒風險程度', '風險分數', '風險判斷理由', '廣告風險分佈',
     '資料來源', '投放平台', '處理狀態', '首次爬取時間', '最後爬取時間', '累積命中次數', '粉絲頁連結',
     '是否認證', '粉絲頁建立時間', '類別', '管理者所在地', '改名歷程', '最後更名時間',
     'About', 'Bio', 'Email', 'Phone', '是否正在刊登廣告',
@@ -792,11 +792,14 @@ function exportCsv() {
   const lines = [headers];
   rows.forEach((item) => {
     const base = [
+      item.id,
       item.name,
       item.pageId,
       item.followers,
       labelMap.risk[item.risk],
+      item.riskScore,
       item.reasons.join('；'),
+      `高 ${item.adsBreakdown.high}／中 ${item.adsBreakdown.medium}／低 ${item.adsBreakdown.low}`,
       item.sources.map((s) => labelMap.source[s]).join(' + '),
       item.platforms.map((p) => labelMap.platform[p]).join(' / '),
       labelMap.status[item.status],
