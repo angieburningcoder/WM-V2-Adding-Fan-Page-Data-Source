@@ -6,9 +6,9 @@
 const cases = [
   {
     id: 'WM-202607-001',
-    name: 'Tenda24 智慧商城',
+    name: 'Wavora24 智慧商城',
     pageId: '102156088437690',
-    pageUrl: 'https://facebook.com/tenda24-smart-shop',
+    pageUrl: 'https://facebook.com/wavora24-smart-shop',
     followers: 5212,
     platforms: ['facebook', 'instagram'],
     sources: ['fan-page', 'meta-ads'],
@@ -26,16 +26,16 @@ const cases = [
     categories: ['購物零售', '電子產品'],
     adminLocations: ['越南', '台灣'],
     nameHistory: [
-      { from: '小資生活好物', to: 'Tenda Wi-Fi 優惠站', changedAt: '2026/06/30' },
-      { from: 'Tenda Wi-Fi 優惠站', to: 'Tenda24 智慧商城', changedAt: '2026/07/03' }
+      { from: '小資生活好物', to: 'Wavora Wi-Fi 優惠站', changedAt: '2026/06/30' },
+      { from: 'Wavora Wi-Fi 優惠站', to: 'Wavora24 智慧商城', changedAt: '2026/07/03' }
     ],
     about: '全台最低價網通商城，限時優惠中',
     bio: '官方授權經銷・私訊客服領取優惠',
-    email: 'service.tenda24@gmail.com',
+    email: 'service.wavora24@gmail.com',
     phone: '+84 912 345 678',
     runningAds: true,
     adsData: [
-      { id: '134663071068724', title: 'Tenda Wi-Fi 限時優惠', detectedAt: '2026/07/24', risk: 'high' },
+      { id: '134663071068724', title: 'Wavora Wi-Fi 限時優惠', detectedAt: '2026/07/24', risk: 'high' },
       { id: '23507155694804', title: '官方客服抽獎活動', detectedAt: '2026/07/23', risk: 'high' },
       { id: '92180515908313', title: '限量路由器免費領取', detectedAt: '2026/07/22', risk: 'medium' }
     ]
@@ -105,9 +105,9 @@ const cases = [
   },
   {
     id: 'WM-202607-004',
-    name: '台北101體驗店 Fkwhyx2',
+    name: '雲頂塔體驗店 Fkwhyx2',
     pageId: '1063019866905745',
-    pageUrl: 'https://facebook.com/taipei101-fkwhyx2',
+    pageUrl: 'https://facebook.com/cloudtop-fkwhyx2',
     followers: 521,
     platforms: ['facebook', 'instagram', 'threads'],
     sources: ['fan-page', 'meta-ads'],
@@ -125,11 +125,11 @@ const cases = [
     categories: ['旅遊景點', '購物零售'],
     adminLocations: ['台灣', '馬來西亞'],
     nameHistory: [
-      { from: 'Fkwhyx2', to: '台北101體驗店 Fkwhyx2', changedAt: '2026/07/14' }
+      { from: 'Fkwhyx2', to: '雲頂塔體驗店 Fkwhyx2', changedAt: '2026/07/14' }
     ],
-    about: '台北101周年慶體驗活動',
+    about: '雲頂塔周年慶體驗活動',
     bio: '填問卷即可參加抽獎',
-    email: 'tpe101.event@gmail.com',
+    email: 'cloudtop.event@gmail.com',
     phone: '+60 12 345 6789',
     runningAds: true,
     adsData: [
@@ -202,9 +202,9 @@ const cases = [
   },
   {
     id: 'WM-202607-007',
-    name: '雲林福利補助專區',
+    name: '青禾福利補助專區',
     pageId: '1093810720468330',
-    pageUrl: 'https://facebook.com/yunlin-benefit',
+    pageUrl: 'https://facebook.com/qinghe-benefit',
     followers: 12749,
     platforms: ['facebook', 'instagram', 'messenger', 'threads', 'audience_network'],
     sources: ['fan-page', 'meta-ads'],
@@ -222,12 +222,12 @@ const cases = [
     categories: ['政府機關', '社區'],
     adminLocations: ['台灣', '越南', '柬埔寨'],
     nameHistory: [
-      { from: '雲林好康分享', to: '雲林縣民福利站', changedAt: '2026/07/01' },
-      { from: '雲林縣民福利站', to: '雲林福利補助專區', changedAt: '2026/07/08' }
+      { from: '青禾好康分享', to: '青禾縣民福利站', changedAt: '2026/07/01' },
+      { from: '青禾縣民福利站', to: '青禾福利補助專區', changedAt: '2026/07/08' }
     ],
-    about: '雲林縣民補助、津貼申請資訊',
+    about: '青禾縣民補助、津貼申請資訊',
     bio: '補助名額有限，請盡速登記',
-    email: 'yunlin.benefit.tw@gmail.com',
+    email: 'qinghe.benefit.tw@gmail.com',
     phone: '+886 912 000 321',
     runningAds: true,
     adsData: [
@@ -238,9 +238,9 @@ const cases = [
   },
   {
     id: 'WM-202607-008',
-    name: '雲林生活大小事',
+    name: '青禾生活大小事',
     pageId: '1093810720468477',
-    pageUrl: 'https://facebook.com/yunlin-life-news',
+    pageUrl: 'https://facebook.com/qinghe-life-news',
     followers: 3480,
     platforms: ['facebook'],
     sources: ['fan-page'],
@@ -258,18 +258,18 @@ const cases = [
     categories: ['社區', '新聞媒體'],
     adminLocations: ['台灣'],
     nameHistory: [],
-    about: '分享雲林在地生活資訊',
+    about: '分享青禾在地生活資訊',
     bio: '歡迎投稿在地大小事',
-    email: 'yunlin.life.news@gmail.com',
+    email: 'qinghe.life.news@gmail.com',
     phone: '05-532-1188',
     runningAds: false,
     adsData: []
   },
   {
     id: 'WM-202607-009',
-    name: '雲林縣政府社會處志工隊',
+    name: '青禾縣政府社會處志工隊',
     pageId: '524478640902725',
-    pageUrl: 'https://facebook.com/yunlin-volunteer',
+    pageUrl: 'https://facebook.com/qinghe-volunteer',
     followers: 2749,
     platforms: ['facebook', 'instagram'],
     sources: ['fan-page'],
@@ -287,11 +287,11 @@ const cases = [
     categories: ['政府機關', '非營利組織'],
     adminLocations: ['台灣'],
     nameHistory: [
-      { from: '雲林社會處志工', to: '雲林縣政府社會處志工隊', changedAt: '2018/02/10' }
+      { from: '青禾社會處志工', to: '青禾縣政府社會處志工隊', changedAt: '2018/02/10' }
     ],
-    about: '雲林縣政府社會處志工隊官方粉絲頁',
+    about: '青禾縣政府社會處志工隊官方粉絲頁',
     bio: '志工招募與活動資訊',
-    email: 'volunteer@yunlin.gov.tw',
+    email: 'volunteer@qinghe-county.example',
     phone: '05-552-2000',
     runningAds: true,
     adsData: [
@@ -300,9 +300,9 @@ const cases = [
   },
   {
     id: 'WM-202607-010',
-    name: '雲林農產直銷站',
+    name: '青禾農產直銷站',
     pageId: '112428841963305',
-    pageUrl: 'https://facebook.com/yunlin-farm-direct',
+    pageUrl: 'https://facebook.com/qinghe-farm-direct',
     followers: 866,
     platforms: ['facebook', 'messenger'],
     sources: ['meta-ads'],
@@ -320,9 +320,9 @@ const cases = [
     categories: ['農業', '購物零售'],
     adminLocations: ['台灣'],
     nameHistory: [],
-    about: '雲林在地農產，產地直送',
+    about: '青禾在地農產，產地直送',
     bio: '每週二、五出貨',
-    email: 'yunlin.farm@gmail.com',
+    email: 'qinghe.farm@gmail.com',
     phone: '05-587-6612',
     runningAds: true,
     adsData: [
@@ -332,9 +332,9 @@ const cases = [
   },
   {
     id: 'WM-202607-011',
-    name: '威秀影城購票中心 Vieshow',
+    name: '晴光影城購票中心 Harulight',
     pageId: '1187720453398821',
-    pageUrl: 'https://facebook.com/vieshow-ticket-center',
+    pageUrl: 'https://facebook.com/harulight-ticket-center',
     followers: 4038,
     platforms: ['facebook', 'instagram'],
     sources: ['fan-page', 'meta-ads'],
@@ -352,11 +352,11 @@ const cases = [
     categories: ['電影院', '娛樂'],
     adminLocations: ['中國', '香港'],
     nameHistory: [
-      { from: '電影情報站', to: '威秀影城購票中心 Vieshow', changedAt: '2026/07/02' }
+      { from: '電影情報站', to: '晴光影城購票中心 Harulight', changedAt: '2026/07/02' }
     ],
-    about: '威秀影城線上購票與會員優惠',
+    about: '晴光影城線上購票與會員優惠',
     bio: '早鳥票限時 5 折',
-    email: 'vieshow.ticket.tw@gmail.com',
+    email: 'harulight.ticket.tw@gmail.com',
     phone: '+852 5123 4567',
     runningAds: true,
     adsData: [

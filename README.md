@@ -4,6 +4,13 @@
 > 不需要安裝任何東西、沒有後端、沒有資料庫，所有資料都是寫死的假資料。
 > 用瀏覽器打開就能看、能點、能篩選、能匯出 CSV。
 
+| 項目 | 內容 |
+|---|---|
+| 對應 PRD | [[WIP] Social Module_Fan Page Detection（Confluence）](https://gogolook.atlassian.net/wiki/spaces/BPC/pages/2118746136/WIP+Social+Module_Fan+Page+Detection) |
+| UI Link | [UI Link ↗](https://angieburningcoder.github.io/WM-V2-Adding-Fan-Page-Data-Source/)（不需登入） |
+| 部署方式 | **GitHub Pages**（免費、不用 build、不用資料庫）→ 見[第 7 節](#7-部署到-github-pages) |
+| 原始 repo | https://github.com/angieburningcoder/WM-V2-Adding-Fan-Page-Data-Source |
+
 ---
 
 ## 目錄
@@ -14,7 +21,7 @@
 4. [業務規則與名詞定義](#4-業務規則與名詞定義)
 5. [Prototype 的邊界（哪些是假的）](#5-prototype-的邊界哪些是假的)
 6. [給 AI Agent：專案結構與修改指南](#6-給-ai-agent專案結構與修改指南)
-7. [部署到 GitHub Pages（選用）](#7-部署到-github-pages選用)
+7. [部署到 GitHub Pages](#7-部署到-github-pages)
 
 ---
 
@@ -70,7 +77,7 @@
 
 ### 3.1 外框（左側選單、上方列）
 
-- 左側選單、上方的使用者名稱（Angela Lin）、客戶切換（威秀）、登出按鈕，都是**裝飾用**，點了沒有作用。
+- 左側選單、上方的使用者名稱（Angela Lin）、客戶切換（晴光）、登出按鈕，都是**裝飾用**，點了沒有作用。
 - 左側選單可以收合（左上角按鈕）。
 - 延續現有 `st.console` 產品的視覺風格。
 
@@ -175,7 +182,7 @@
 
 ## 5. Prototype 的邊界（哪些是假的）
 
-- 所有資料都是假資料（12 筆案件），客戶固定為「威秀」。
+- 所有資料都是假資料（12 筆案件），客戶固定為「晴光」。
 - 風險分數只用於展示，不代表正式規則的計算結果。
 - 狀態變更只存在瀏覽器記憶體，**重新整理後還原**。
 - 日期範圍**不參與篩選**，只用於 CSV 檔名。
@@ -287,12 +294,12 @@
 
 ### 6.6 修改後必做：更新快取版本號
 
-`index.html` 引用資源時帶有版本號（目前是 `?v=12`）：
+`index.html` 引用資源時帶有版本號（目前是 `?v=13`）：
 
 ```html
-<link rel="stylesheet" href="styles.css?v=12" />
-<script src="mock-data.js?v=12"></script>
-<script src="app.js?v=12"></script>
+<link rel="stylesheet" href="styles.css?v=13" />
+<script src="mock-data.js?v=13"></script>
+<script src="app.js?v=13"></script>
 ```
 
 改過 CSS / JS 後，把三處的數字一起 +1，避免瀏覽器（尤其是部署到 GitHub Pages 後）讀到舊檔。
@@ -309,23 +316,88 @@
 
 ---
 
-## 7. 部署到 GitHub Pages（選用）
+## 7. 部署到 GitHub Pages
 
-想讓別人用網址直接看，可以部署到 GitHub Pages：
+部署完會得到一個網址（例如 `https://你的帳號.github.io/watchmen-v2-prototype/`），任何人用瀏覽器打開就能看，不需要安裝任何東西。
 
-1. 建立 GitHub repository，把 `index.html`、`styles.css`、`mock-data.js`、`app.js` 放在 `main` branch 根目錄。
-2. Repository → **Settings** → **Pages**。
-3. Source 選 **Deploy from a branch**，Branch 選 `main`、Folder 選 `/ (root)`。
-4. 儲存後等幾分鐘，GitHub 會給一個網址。
+### 7.0 事前準備
 
-使用 GitHub CLI 的話：
+- 一個 GitHub 帳號（https://github.com/signup）。
+- ⚠️ **公開性**：免費帳號的 GitHub Pages 只能用在 **Public repository**，代表程式碼和網址任何人都看得到。本專案全是假資料，但若介意，請改用公司 GitHub Organization（付費方案可開 private repo + Pages）或改用 Vercel（見下方 7.4）。
 
-```bash
-git init
-git add .
-git commit -m "feat: add Watchmen V2 FE prototype"
-git branch -M main
-gh repo create watchmen-v2-prototype --public --source=. --remote=origin --push
+### 7.1 放上 GitHub（在 Claude Code / Codex 裡用說的完成）
+
+> 📘 含 GitHub 畫面截圖與生活比喻的圖文版：請看交接手冊《Watchmen 專案交接手冊》Part 1、Part 2。
+> 不需要開程式編輯器或終端機，所有 Git 動作都在 Claude Code / Codex 桌機 app 的對話框裡請 AI 完成。AI 要執行指令前會先問你，看懂了再按允許。
+
+**名詞一句話**
+
+| 名詞 | 就像 |
+|---|---|
+| `git init` | 幫資料夾裝上「存檔系統」，每個專案做一次 |
+| `commit` | 按下存檔並寫一句備註，**只存在自己電腦** |
+| `push` | 把存檔**上傳到 GitHub**，部署平台看的是 GitHub 上的版本 |
+| repo | GitHub 上這個專案專屬的保險箱 |
+| 連線（remote / origin） | 資料夾和保險箱之間的水管，push 才知道要送去哪 |
+
+**第一次使用這台電腦（整台電腦只做一次）**：對 AI 說
+
+```text
+請幫我檢查這台電腦有沒有安裝 Git 和 GitHub CLI（gh），沒有的話幫我安裝，每一步先用白話說明。
+然後用 gh auth login 以瀏覽器方式登入 GitHub（HTTPS），完成後執行 gh auth setup-git，出現一次性驗證碼時告訴我。
+最後把 git 的全域使用者名稱設為 Yuri，email 設為（你的 GitHub email）。
 ```
 
-> ⚠️ `--public` 代表任何人都能看到程式碼與網址；若內容不宜公開，改用 `--private`（注意免費帳號的 private repo 可能無法使用 Pages）。
+AI 給你 8 碼驗證碼時 → 打開 https://github.com/login/device 輸入 → 按 **Authorize**。
+
+**這個專案的標準流程（開始部署前先做完）**
+
+| # | 在做什麼 | 你要做 / 對 AI 說 |
+|---|---|---|
+| 1 | 解壓 zip，放到固定位置 | 例如 `文件/Projects/watchmen-v2-fe-prototype`。不要放「下載」或桌面 |
+| 2 | 在 app 開啟這個資料夾 | 開新對話時選擇專案資料夾（working folder） |
+| 3 | `git init` 啟動存檔系統 | 「請在這個資料夾執行 git init，預設分支設為 main。」 |
+| 4 | 開一個 GitHub repo | **網頁**：github.com 左上選單 **All repositories** → **New repository** → Owner 選自己、Repository name 填 `watchmen-v2-prototype`、visibility 選 **Public**、Add README **Off**、.gitignore **No .gitignore**、license **No license** → **Create repository**。<br>**或請 AI**：「請用 gh 在我的 GitHub 帳號下建立名叫 watchmen-v2-prototype 的 public repository，不要加 README。」 |
+| 5 | 連線 | repo 頁面綠色 **Code** → **HTTPS** → 複製網址，對 AI 說「請把這個資料夾連線到（網址），remote 名稱用 origin。」（請 AI 建的 repo 可省略網址） |
+| 6 | 第一次 `commit` | 「請確認 .gitignore 有排除 .env 和 node_modules，然後 commit 所有檔案，訊息寫『首次匯入專案』，告訴我存了哪些檔案。」清單出現 `.env` 就先停下來請 AI 移除 |
+| 7 | `push` | 「請把 main 分支 push 到 GitHub（origin），並設為預設。」 |
+| 8 | 確認 | 瀏覽器打開 repo 網址，看到檔案列表和「首次匯入專案」 |
+
+懶人版（第 3～7 步一次說完）：
+
+```text
+這是一個剛解壓的新專案。請幫我依序完成，每一步先用白話告訴我在做什麼：
+1. git init，預設分支設為 main
+2. 用 gh 在我的 GitHub 帳號下建立名叫「watchmen-v2-prototype」的 public repository（不要加 README）
+3. 把資料夾連線到這個 repo（remote 名稱 origin）
+4. 確認 .gitignore 有排除 .env 和 node_modules，然後 commit 所有檔案，訊息寫「首次匯入專案」
+5. push 到 GitHub，最後給我 repo 的網址
+```
+
+**之後每次修改**：請 AI 改 → 「請在本機跑起來給我看」→ 「請 commit（訊息用中文說明改了什麼）並 push 到 GitHub」→ 部署平台幾分鐘內自動更新。只有 commit 沒有 push，網站不會變。
+
+### 7.2 開啟 GitHub Pages
+
+1. 在 GitHub repo 頁面點上方 **Settings** → 左側 **Pages**。
+2. **Build and deployment** 區塊：Source 選 **Deploy from a branch**；Branch 選 `main`、資料夾選 `/ (root)` → **Save**。
+3. 等 1～3 分鐘，重新整理 Pages 頁面，上方出現 **Your site is live at https://…**，點進去就是 Prototype。
+
+### 7.3 之後要更新畫面
+
+1. 請 AI 修改，並**照 [6.6](#66-修改後必做更新快取版本號) 把版本號 +1**，不然別人會看到舊畫面。
+2. 對 AI 說：「請 commit 這次的修改，訊息用中文說明改了什麼，然後 push 到 GitHub。」
+3. 約 1～3 分鐘後網址自動更新。可到 repo 的 **Actions** 分頁看進度（綠勾 = 完成）。
+
+### 7.4 替代方案：Vercel（想要 private repo 時）
+
+1. 用 GitHub 帳號登入 https://vercel.com → **Add New… → Project** → 選這個 repo → **Import**。
+2. Framework Preset 選 **Other**，其他全部預設 → **Deploy**。
+3. 完成後會拿到 `https://xxx.vercel.app` 網址。之後每次 push 到 `main` 會自動重新部署。
+
+### 7.5 常見問題
+
+| 狀況 | 原因 / 解法 |
+|---|---|
+| 網址打開是 404 | 剛開啟要等幾分鐘；或 `index.html` 不在 repo 最外層（被包在子資料夾裡）。 |
+| 改了檔案但畫面沒變 | 瀏覽器快取 → 按 `Cmd+Shift+R`；並確認有做 6.6 版本號 +1。 |
+| Settings 裡找不到 Pages 選項 | repo 是 Private 且帳號是免費方案 → 改成 Public 或用 7.4 Vercel。 |
